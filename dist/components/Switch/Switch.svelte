@@ -1,0 +1,110 @@
+<script lang="ts">
+	import { getFieldContext } from '../../common/context.svelte.js';
+	import Label from '../Label/Label.svelte';
+	import Text from '../Text/Text.svelte';
+	import type { Color } from '../../types.js';
+	import { cleanClass, generateId } from '../../utils.js';
+	import { Switch, type WithoutChildrenOrChild } from 'bits-ui';
+	import { tv } from 'tailwind-variants';
+
+	type Props = {
+		checked?: boolean;
+		color?: Color;
+		disabled?: boolean;
+		class?: string;
+	} & WithoutChildrenOrChild<Switch.RootProps>;
+
+	let {
+		id = generateId(),
+		checked = $bindable(false),
+		ref = $bindable(null),
+		color = 'primary',
+		class: className,
+		...restProps
+	}: Props = $props();
+
+	const { readOnly, required, disabled, label, description, ...labelProps } =
+		$derived(getFieldContext());
+
+	const enabled = $derived(checked && !disabled);
+
+	const wrapper = tv({
+		base: 'relative flex flex-col justify-center',
+		variants: {
+			disabled: {
+				true: 'cursor-not-allowed',
+				false: 'cursor-pointer',
+			},
+		},
+	});
+
+	const bar = tv({
+		base: 'my-2 h-3 w-12 rounded-full border border-transparent',
+		variants: {
+			fillColor: {
+				default: 'bg-gray-300 dark:bg-gray-400',
+				primary: 'bg-primary/50 dark:bg-primary',
+				secondary: 'bg-dark/50',
+				success: 'bg-success/50',
+				danger: 'bg-danger/50',
+				warning: 'bg-warning/50',
+				info: 'bg-info/50',
+			},
+		},
+	});
+
+	const dot = tv({
+		base: 'absolute h-6 w-6 rounded-full transition-transform duration-400',
+		variants: {
+			checked: {
+				true: 'translate-x-6 border border-gray-500/10 shadow-sm rtl:-translate-x-6 dark:border-gray-800/50',
+				false: '',
+			},
+			fillColor: {
+				default: 'bg-gray-400 dark:bg-gray-500',
+				primary: 'bg-[#4250af]',
+				secondary: 'bg-dark',
+				success: 'bg-success',
+				danger: 'bg-danger',
+				warning: 'bg-warning',
+				info: 'bg-info',
+			},
+		},
+	});
+
+	const inputId = `input-${id}`;
+	const labelId = `label-${id}`;
+	const descriptionId = $derived(description ? `description-${id}` : undefined);
+</script>
+
+<Switch.Root
+	bind:checked
+	bind:ref
+	id={inputId}
+	disabled={disabled || readOnly}
+	{required}
+	class={cleanClass(label && 'w-full', className)}
+	aria-readonly={readOnly}
+	aria-labelledby={labelId}
+	aria-describedby={descriptionId}
+	{...restProps}
+>
+	<Switch.Thumb>
+		{#snippet child()}
+			<div class={cleanClass(label && 'flex items-center justify-between gap-1')}>
+				{#if label}
+					<div class="text-start">
+						<Label id={labelId} for={inputId} {label} {...labelProps} />
+						{#if description}
+							<Text color="secondary" size="small" id={descriptionId}>{description}</Text>
+						{/if}
+					</div>
+				{/if}
+				<span class={wrapper({ disabled })}>
+					<span class={bar({ fillColor: enabled ? color : 'default' })}> </span>
+					<span class={dot({ checked: enabled, fillColor: enabled ? color : 'default' })}></span>
+				</span>
+			</div>
+		{/snippet}
+	</Switch.Thumb>
+</Switch.Root>
