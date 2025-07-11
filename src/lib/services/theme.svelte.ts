@@ -9,7 +9,9 @@ export type ThemeOptions = {
 };
 
 const defaultOptions: ThemeOptions = {
-	darkClass: 'dark',
+	...(globalThis.matchMedia('(prefers-color-scheme: dark)').matches
+		? { darkClass: 'dark' }
+		: { lightClass: 'light' }),
 	selector: 'body',
 };
 
@@ -19,7 +21,9 @@ export const setThemeOptions = (newOptions: ThemeOptions) =>
 	(options = { ...defaultOptions, ...newOptions });
 
 type ThemePreference = { value: Theme };
-const defaultTheme: ThemePreference = { value: Theme.Dark };
+const defaultTheme: ThemePreference = {
+	value: globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.Dark : Theme.Light,
+};
 const { state, sync: syncToLocalStorage } = preference<ThemePreference>({
 	key: 'theme',
 	defaults: defaultTheme,
