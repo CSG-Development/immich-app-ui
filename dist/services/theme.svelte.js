@@ -2,12 +2,16 @@ import { browser } from '$app/environment';
 import { preference } from './preference.svelte.js';
 import { Theme } from '../types.js';
 const defaultOptions = {
-    darkClass: 'dark',
+    ...(globalThis.matchMedia('(prefers-color-scheme: dark)').matches
+        ? { darkClass: 'dark' }
+        : { lightClass: 'light' }),
     selector: 'body',
 };
 let options = defaultOptions;
 export const setThemeOptions = (newOptions) => (options = { ...defaultOptions, ...newOptions });
-const defaultTheme = { value: Theme.Dark };
+const defaultTheme = {
+    value: globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.Dark : Theme.Light,
+};
 const { state, sync: syncToLocalStorage } = preference({
     key: 'theme',
     defaults: defaultTheme,
