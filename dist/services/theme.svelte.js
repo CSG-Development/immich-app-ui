@@ -64,5 +64,6 @@ export const initializeTheme = (options) => {
     if (options) {
         setThemeOptions(options);
     }
+    syncToLocalStorage();
     syncToDom();
 };
