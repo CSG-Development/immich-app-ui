@@ -20,11 +20,11 @@
 	const getUrl = (variant: Props['variant']): string => {
 		switch (variant) {
 			case 'stacked': {
-				return theme.value === Theme.Light ? stackedLight : stackedDark;
+				return theme.value === Theme.Dark ? stackedDark : stackedLight;
 			}
 
 			case 'inline': {
-				return theme.value === Theme.Light ? inlineLight : inlineDark;
+				return theme.value === Theme.Dark ? inlineDark : inlineLight;
 			}
 
 			default: {
