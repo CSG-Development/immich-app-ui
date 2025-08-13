@@ -17,8 +17,19 @@
 		icon,
 		color = 'currentColor',
 		description,
+		progress = undefined,
+		progressColor,
 		...restProps
 	}: IconProps & HTMLAttributes<EventTarget> = $props();
+
+	const radius = 10; // fixed because of 24x24 viewBox, adjust if needed
+	const circumference = 2 * Math.PI * radius;
+
+	let progressOffset = $state(
+		progress !== undefined
+			? circumference - (Math.min(Math.max(progress, 0), 100) / 100) * circumference
+			: 0,
+	);
 </script>
 
 <svg
@@ -42,11 +53,28 @@
 	{#if description}
 		<desc>{description}</desc>
 	{/if}
+	{#if progress !== undefined}
+		<circle
+			cx="12"
+			cy="12"
+			r={radius}
+			fill="none"
+			stroke={progressColor}
+			stroke-width={2}
+			stroke-dasharray={circumference}
+			stroke-dashoffset={progressOffset}
+			stroke-linecap="round"
+			transform="rotate(-90 12 12)"
+		/>
+	{/if}
 	<path d={icon} fill={color} />
 </svg>
 
 <style>
 	svg {
 		transition: transform 0.2s ease;
+	}
+	circle {
+		transition: stroke-dashoffset 0.35s ease;
 	}
 </style>
