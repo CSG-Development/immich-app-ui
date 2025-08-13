@@ -40,7 +40,6 @@ export type IconProps = {
 	strokeWidth?: number;
 	strokeColor?: string;
 	progress?: number;
-	progressColor?: Color | 'currentColor' | string;
 };
 
 type ButtonOrAnchor =

@@ -18,7 +18,6 @@
 		color = 'currentColor',
 		description,
 		progress = undefined,
-		progressColor,
 		...restProps
 	}: IconProps & HTMLAttributes<EventTarget> = $props();
 
@@ -59,8 +58,8 @@
 			cy="12"
 			r={radius}
 			fill="none"
-			stroke={progressColor}
-			stroke-width={2}
+			stroke="primary"
+			stroke-width={3}
 			stroke-dasharray={circumference}
 			stroke-dashoffset={progressOffset}
 			stroke-linecap="round"
