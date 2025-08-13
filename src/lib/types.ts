@@ -39,6 +39,8 @@ export type IconProps = {
 	viewBox?: string;
 	strokeWidth?: number;
 	strokeColor?: string;
+	progress?: number;
+	progressColor?: Color | 'currentColor' | string;
 };
 
 type ButtonOrAnchor =
