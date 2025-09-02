@@ -14,7 +14,7 @@
 	const { center, class: className, size = 'full', children }: Props = $props();
 
 	const styles = tv({
-		base: '',
+		base: 'bg-light dark:bg-bg',
 		variants: {
 			size: {
 				tiny: 'max-w-lg',
