@@ -10,7 +10,7 @@
 	import { tv } from 'tailwind-variants';
 
 	type Props = {
-		size?: Size | 'landing';
+		size?: Size | 'landing' | 'stacked';
 		variant?: 'stacked' | 'inline' | 'logo' | 'icon';
 		class?: string;
 	};
@@ -42,6 +42,7 @@
 				large: 'h-16',
 				giant: 'h-24',
 				landing: 'h-64',
+				stacked: 'h-[180px]',
 			},
 
 			variant: {

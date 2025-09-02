@@ -1,6 +1,6 @@
 import { type Size } from '../../types.js';
 type Props = {
-    size?: Size | 'landing';
+    size?: Size | 'landing' | 'stacked';
     variant?: 'stacked' | 'inline' | 'logo' | 'icon';
     class?: string;
 };
