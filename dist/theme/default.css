@@ -3,7 +3,7 @@
 @theme inline {
 	--color-primary: rgb(var(--immich-ui-primary));
 	--color-light: rgb(var(--immich-ui-light));
-	--color-bg: rgb(var(--immich-ui-background));
+	--color-bg: rgb(var(--immich-ui-bg));
 	--color-dark: rgb(var(--immich-ui-dark));
 	--color-success: rgb(var(--immich-ui-success));
 	--color-danger: rgb(var(--immich-ui-danger));
