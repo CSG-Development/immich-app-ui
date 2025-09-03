@@ -57,4 +57,4 @@
 	const src = $derived(getUrl(variant));
 </script>
 
-<img {src} class={cleanClass(styles({ size, variant }), className)} alt="Immich logo" />
+<img {src} class={cleanClass(styles({ size, variant }), className)} alt="Curator Photos logo" />
