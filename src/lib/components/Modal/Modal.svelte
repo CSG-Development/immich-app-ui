@@ -24,6 +24,7 @@
 		expandable?: boolean;
 		children: Snippet;
 		onClose?: () => void;
+		withoutScroll?: boolean;
 	};
 
 	let {
@@ -33,6 +34,7 @@
 		icon = true,
 		onClose,
 		class: className,
+		withoutScroll = false,
 		children,
 	}: Props = $props();
 
@@ -93,7 +95,7 @@
 						</div>
 					</CardHeader>
 
-					<CardBody class="grow px-5">
+					<CardBody class={`grow px-5 ${withoutScroll ? 'overflow-visible' : ''}`}>
 						{@render bodyChildren?.snippet()}
 					</CardBody>
 
