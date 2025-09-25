@@ -53,6 +53,7 @@ export { default as SupporterBadge } from './components/SupporterBadge/Supporter
 export { default as Switch } from './components/Switch/Switch.svelte';
 export { default as Text } from './components/Text/Text.svelte';
 export { default as ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher.svelte';
+export { default as Tooltip } from './components/Tooltip/Tooltip.svelte';
 // helpers
 export * from './services/theme.svelte.js';
 export * from './services/translation.svelte.js';

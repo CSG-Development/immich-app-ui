@@ -54,6 +54,7 @@ export { default as SupporterBadge } from '$lib/components/SupporterBadge/Suppor
 export { default as Switch } from '$lib/components/Switch/Switch.svelte';
 export { default as Text } from '$lib/components/Text/Text.svelte';
 export { default as ThemeSwitcher } from '$lib/components/ThemeSwitcher/ThemeSwitcher.svelte';
+export { default as Tooltip } from '$lib/components/Tooltip/Tooltip.svelte';
 
 // helpers
 export * from '$lib/services/theme.svelte.js';

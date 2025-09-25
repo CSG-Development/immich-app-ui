@@ -2,6 +2,7 @@
 	import { cleanClass } from '$lib/utils.js';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import Tooltip from '../Tooltip/Tooltip.svelte';
 
 	type Props = {
 		class?: string;
@@ -9,9 +10,19 @@
 		href: string;
 	} & HTMLAnchorAttributes;
 
-	const { href, class: className, children, ...restProps }: Props = $props();
+	const {
+		href,
+		class: className,
+		'aria-label': ariaLabel,
+		children,
+		...restProps
+	}: Props = $props();
+
+	const title = $derived(restProps?.title || ariaLabel || '');
 </script>
 
-<a {href} class={cleanClass('underline', className)} {...restProps}>
-	{@render children()}
-</a>
+<Tooltip text={title}>
+	<a {href} class={cleanClass('underline', className)} {...restProps}>
+		{@render children()}
+	</a>
+</Tooltip>
