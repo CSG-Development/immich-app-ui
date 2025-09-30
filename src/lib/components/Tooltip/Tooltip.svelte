@@ -89,13 +89,7 @@
 	};
 </script>
 
-<div
-	role="presentation"
-	onmouseenter={show}
-	onmouseleave={hide}
-	onmousemove={onMouseMove}
-	class="inline-flex"
->
+<div role="presentation" onmouseenter={show} onmouseleave={hide} onmousemove={onMouseMove}>
 	{@render children?.()}
 </div>
 
