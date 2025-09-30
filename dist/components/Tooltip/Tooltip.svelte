@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Text from '../Text/Text.svelte';
-	import { cleanClass } from '../../index.ts/utils.js';
+	import { cleanClass } from '../../utils.js';
 	import type { Snippet } from 'svelte';
 	import { tick } from 'svelte';
 
