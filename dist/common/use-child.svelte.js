@@ -1,5 +1,5 @@
 import { ChildKey } from '../constants.js';
-import { withPrefix } from '../utils.js';
+import { withPrefix } from '../utilities/internal.js';
 import { setContext } from 'svelte';
 import { SvelteMap } from 'svelte/reactivity';
 export const withChildrenSnippets = (key) => {

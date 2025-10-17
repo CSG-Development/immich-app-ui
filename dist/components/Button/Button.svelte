@@ -2,7 +2,7 @@
 	import Button from '../../internal/Button.svelte';
 	import type { ButtonProps } from '../../types.js';
 
-	const props: ButtonProps = $props();
+	let { ref = $bindable(null), ...props }: ButtonProps = $props();
 </script>
 
-<Button {...props} />
+<Button bind:ref {...props} />

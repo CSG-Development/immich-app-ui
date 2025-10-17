@@ -1,16 +1,15 @@
 import { browser } from '$app/environment';
 import { preference } from './preference.svelte.js';
 import { Theme } from '../types.js';
+const isDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
 const defaultOptions = {
-    ...(globalThis.matchMedia('(prefers-color-scheme: dark)').matches
-        ? { darkClass: 'dark' }
-        : { lightClass: 'light' }),
+    ...(isDark ? { darkClass: 'dark' } : { lightClass: 'light' }),
     selector: 'body',
 };
 let options = defaultOptions;
 export const setThemeOptions = (newOptions) => (options = { ...defaultOptions, ...newOptions });
 const defaultTheme = {
-    value: globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.Dark : Theme.Light,
+    value: isDark ? Theme.Dark : Theme.Light,
 };
 const { state, sync: syncToLocalStorage } = preference({
     key: 'theme',
@@ -60,10 +59,13 @@ const syncToDom = () => {
         }
     }
 };
+export const toggleTheme = () => {
+    theme.value = theme.value === Theme.Dark ? Theme.Light : Theme.Dark;
+    onThemeChange();
+};
 export const initializeTheme = (options) => {
     if (options) {
         setThemeOptions(options);
     }
-    syncToLocalStorage();
     syncToDom();
 };

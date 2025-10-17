@@ -1,17 +1,33 @@
 <script lang="ts">
-	import { cleanClass } from '../../utils.js';
+	import { isExternalLink, resolveUrl } from '../../utilities/common.js';
+	import { cleanClass } from '../../utilities/internal.js';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 
 	type Props = {
 		class?: string;
-		children: Snippet;
+		children?: Snippet;
 		href: string;
+		underline?: boolean;
 	} & HTMLAnchorAttributes;
 
-	const { href, class: className, children, ...restProps }: Props = $props();
+	const { href, class: className, underline = true, children, ...restProps }: Props = $props();
+
+	let resolved = $derived(resolveUrl(href));
+	let external = $derived(isExternalLink(resolved));
 </script>
 
-<a {href} class={cleanClass('underline', className)} {...restProps}>
-	{@render children()}
+<a
+	href={resolved}
+	draggable="false"
+	class={cleanClass(underline && 'underline', className)}
+	target={external ? '_blank' : undefined}
+	rel={external ? 'noopener noreferrer' : undefined}
+	{...restProps}
+>
+	{#if children}
+		{@render children()}
+	{:else}
+		{href}
+	{/if}
 </a>

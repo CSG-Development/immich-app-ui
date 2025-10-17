@@ -1,9 +1,18 @@
 import type { TranslationProps } from '../types.js';
 declare const defaultTranslations: {
+    cancel: string;
     close: string;
-    showPassword: string;
-    hidePassword: string;
-    darkTheme: string;
+    confirm: string;
+    code_copy: string;
+    code_copied: string;
+    search_placeholder: string;
+    search_no_results: string;
+    search_recently_used: string;
+    prompt_default: string;
+    show_password: string;
+    hide_password: string;
+    dark_theme: string;
+    command_palette_prompt_default: string;
 };
 export type Translations = typeof defaultTranslations;
 export declare const translate: <T extends keyof Translations>(key: T, overrides?: TranslationProps<T>) => string;

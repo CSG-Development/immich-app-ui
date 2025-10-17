@@ -8,36 +8,40 @@
 	import CloseButton from '$lib/components/CloseButton/CloseButton.svelte';
 	import Icon from '$lib/components/Icon/Icon.svelte';
 	import Logo from '$lib/components/Logo/Logo.svelte';
-	import { ChildKey } from '$lib/constants.js';
+	import { ChildKey, zIndex } from '$lib/constants.js';
 	import type { ModalSize } from '$lib/types.js';
-	import { cleanClass } from '$lib/utils.js';
+	import { cleanClass } from '$lib/utilities/internal.js';
 	import { Dialog } from 'bits-ui';
-	import { type Snippet } from 'svelte';
+	import { tick, type Snippet } from 'svelte';
 	import { tv } from 'tailwind-variants';
 
 	type Props = {
-		title: string;
+		title?: string;
+		icon?: string | boolean;
 		size?: ModalSize;
 		class?: string;
-		open?: boolean;
-		icon?: string | boolean;
 		expandable?: boolean;
+		closeOnEsc?: boolean;
+		closeOnBackdropClick?: boolean;
 		children: Snippet;
 		onClose?: () => void;
+		onEscapeKeydown?: (event: KeyboardEvent) => void;
 	};
 
 	let {
-		title,
 		size = 'medium',
-		open = true,
-		icon = true,
 		onClose,
+		onEscapeKeydown,
+		icon = true,
+		title,
 		class: className,
+		closeOnEsc = true,
+		closeOnBackdropClick = false,
 		children,
 	}: Props = $props();
 
 	const modalStyles = tv({
-		base: 'bg-light dark:bg-subtle border-subtle shadow-primary/20 flex rounded-none border shadow-sm sm:rounded-2xl dark:border-white/10',
+		base: `bg-light dark:bg-subtle border-subtle shadow-primary/20 flex rounded-none border shadow-sm sm:rounded-2xl dark:border-white/10`,
 		variants: {
 			size: {
 				tiny: 'h-full sm:h-min md:max-w-sm',
@@ -50,47 +54,68 @@
 		},
 	});
 
+	const modalContentStyles = tv({
+		base: `${zIndex.ModalContent} fixed inset-0 m-auto flex max-h-dvh grow sm:p-4`,
+		variants: {
+			size: {
+				tiny: 'sm:h-min md:max-w-sm',
+				small: 'sm:h-min md:max-w-md',
+				medium: 'sm:h-min md:max-w-(--breakpoint-sm)',
+				large: 'sm:h-min md:max-w-(--breakpoint-md)',
+				giant: 'sm:h-min md:max-w-(--breakpoint-lg)',
+				full: '',
+			},
+		},
+	});
+
 	const { getChildren: getChildSnippet } = withChildrenSnippets(ChildKey.Modal);
+	const headerChildren = $derived(getChildSnippet(ChildKey.ModalHeader));
 	const bodyChildren = $derived(getChildSnippet(ChildKey.ModalBody));
 	const footerChildren = $derived(getChildSnippet(ChildKey.ModalFooter));
 
-	const onChange = (value: boolean) => {
-		if (!value) {
-			onClose?.();
-		}
+	const handleClose = async () => {
+		// wait for bits-ui to complete its event cycle
+		await tick();
+		await new Promise((resolve) => setTimeout(resolve, 10));
+
+		onClose?.();
 	};
+
+	let cardRef = $state<HTMLElement | null>(null);
+
+	const interactOutsideBehavior = $derived(closeOnBackdropClick ? 'close' : 'ignore');
+	const escapeKeydownBehavior = $derived(closeOnEsc ? 'close' : 'ignore');
 </script>
 
-<Dialog.Root {open} onOpenChange={onChange}>
+<Dialog.Root open={true} onOpenChange={(isOpen: boolean) => !isOpen && handleClose()}>
 	<Dialog.Portal>
-		<Dialog.Overlay class="fixed start-0 top-0 flex h-dvh w-screen bg-black/30" />
+		<Dialog.Overlay
+			class="{zIndex.ModalBackdrop} fixed start-0 top-0  flex h-dvh max-h-dvh w-screen bg-black/30"
+		/>
 		<Dialog.Content
-			onkeydown={(e) => {
-				if (e.key === 'Escape' && open) {
-					// Stop propagation to ensure modals close before immich-web takes over
-					e.stopPropagation();
-					open = false;
-					onClose?.();
-				}
-			}}
-			class={cleanClass(
-				'fixed start-0 top-0 flex h-dvh w-screen items-center justify-center overflow-hidden sm:p-4',
-			)}
+			{onEscapeKeydown}
+			{escapeKeydownBehavior}
+			{interactOutsideBehavior}
+			class={cleanClass(modalContentStyles({ size }))}
 		>
-			<div class={cleanClass('flex h-full w-full flex-col items-center justify-center')}>
-				<Card class={cleanClass(modalStyles({ size }), className)}>
+			<div class={cleanClass('flex grow flex-col justify-center')}>
+				<Card bind:ref={cardRef} class={cleanClass(modalStyles({ size }), className)}>
 					<CardHeader class="border-b border-gray-200 px-5 py-3 dark:border-white/10">
-						<div class="flex items-center justify-between gap-2">
-							{#if typeof icon === 'string'}
-								<Icon {icon} size="1.5rem" aria-hidden />
-							{:else if icon}
-								<Logo variant="icon" size="tiny" />
-							{/if}
-							<CardTitle tag="p" class="text-dark/90 grow text-lg font-semibold">{title}</CardTitle>
-							<Dialog.Close>
-								<CloseButton onclick={() => onChange(false)} class="-me-2" />
-							</Dialog.Close>
-						</div>
+						{#if headerChildren}
+							{@render headerChildren.snippet()}
+						{:else if title}
+							<div class="flex items-center justify-between gap-2">
+								{#if typeof icon === 'string'}
+									<Icon {icon} size="1.5rem" aria-hidden />
+								{:else if icon}
+									<Logo variant="icon" size="tiny" />
+								{/if}
+								<CardTitle tag="p" class="text-dark/90 grow text-lg font-semibold"
+									>{title}</CardTitle
+								>
+								<CloseButton class="-me-2" onclick={() => handleClose()} />
+							</div>
+						{/if}
 					</CardHeader>
 
 					<CardBody class="grow px-5">
