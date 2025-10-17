@@ -2,10 +2,10 @@
   import { type ExampleCardProps } from '$docs/constants.js';
   import { Button, Card, CardBody, CardHeader, CardTitle, HStack, Theme } from '@immich/ui';
   import { mdiEye, mdiXml } from '@mdi/js';
-  import { HighlightSvelte, LineNumbers } from 'svelte-highlight';
-  import atomOneDark from 'svelte-highlight/styles/atom-one-dark';
+  /*   import { HighlightSvelte, LineNumbers } from 'svelte-highlight';
+  import atomOneDark from 'svelte-highlight/styles/atom-one-dark'; */
 
-  const { title, component: Component, code, theme }: ExampleCardProps = $props();
+  const { title, component: Component, /* code, */ theme }: ExampleCardProps = $props();
 
   let viewMode = $state<'code' | 'preview'>('preview');
 
@@ -30,10 +30,10 @@
   const cardBodyClass = $derived(getCardBodyClass(viewMode, theme));
 </script>
 
-<svelte:head>
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-  {@html atomOneDark}
-</svelte:head>
+<!-- <svelte:head> -->
+<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+<!-- {@html atomOneDark} -->
+<!-- </svelte:head> -->
 
 <Card>
   <CardHeader>
@@ -51,9 +51,9 @@
     {#if viewMode === 'preview'}
       <Component />
     {:else}
-      <HighlightSvelte code={code.trim().replaceAll(/\t/gm, '  ')} let:highlighted>
+      <!-- <HighlightSvelte code={code.trim().replaceAll(/\t/gm, '  ')} let:highlighted>
         <LineNumbers {highlighted} hideBorder wrapLines />
-      </HighlightSvelte>
+      </HighlightSvelte> -->
     {/if}
   </CardBody>
 </Card>

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { CodeBlock, Stack, Text } from '@immich/ui';
-  import { json } from 'svelte-highlight/languages';
+  /* import { json } from 'svelte-highlight/languages'; */
 
   const typescriptExample1 = "const foo = 'bar';";
   const typescriptExample2 = typescriptExample1 + `\nconst hello = "world!"`;
-  const jsonExample = JSON.stringify({ foo: 'bar', hello: 'world!' }, null, 2);
+  /* const jsonExample = JSON.stringify({ foo: 'bar', hello: 'world!' }, null, 2); */
 </script>
 
 <Stack gap={4}>
@@ -15,7 +15,7 @@
 
   <div class="flex flex-col gap-2">
     <Text>JSON language</Text>
-    <CodeBlock code={jsonExample} language={json} />
+    <!-- <CodeBlock code={jsonExample} language={json} /> -->
   </div>
 
   <div class="flex flex-col gap-2">
@@ -25,6 +25,6 @@
 
   <div class="flex flex-col gap-2">
     <Text>Line numbers on</Text>
-    <CodeBlock code={jsonExample} language={json} lineNumbers />
+    <!-- <CodeBlock code={jsonExample} language={json} lineNumbers /> -->
   </div>
 </Stack>

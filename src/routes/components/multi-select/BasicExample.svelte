@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { CodeBlock, Field, MultiSelect, Stack, Text, type SelectItem } from '@immich/ui';
-  import { json } from 'svelte-highlight/languages';
+  import { /* CodeBlock, */ Field, MultiSelect, Stack, Text, type SelectItem } from '@immich/ui';
+  /* import { json } from 'svelte-highlight/languages'; */
 
   const themes: SelectItem[] = [
     { value: 'light-monochrome', label: 'Light Monochrome' },
@@ -53,5 +53,5 @@
 </Stack>
 <div class="w-full">
   <Text>Theme:</Text>
-  <CodeBlock language={json} code={JSON.stringify(values, null, 2)} />
+  <!-- <CodeBlock language={json} code={JSON.stringify(values, null, 2)} /> -->
 </div>

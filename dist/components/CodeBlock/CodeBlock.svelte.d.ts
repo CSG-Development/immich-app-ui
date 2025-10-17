@@ -1,8 +1,6 @@
-import { type TranslationProps } from '../../types.js';
-import { type LanguageType } from 'svelte-highlight/languages';
+import { /* Theme, */ type TranslationProps } from '../../types.js';
 type Props = {
     code: string;
-    language?: LanguageType<string>;
     lineNumbers?: boolean;
     lightTheme?: string;
     darkTheme?: string;
