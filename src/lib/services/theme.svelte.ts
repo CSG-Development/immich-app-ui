@@ -3,15 +3,16 @@ import { preference } from '$lib/services/preference.svelte.js';
 import { Theme } from '$lib/types.js';
 
 export type ThemeOptions = {
-  lightClass?: string;
-  darkClass?: string;
-  selector?: string;
+  lightClass: string;
+  darkClass: string;
+  selector: string;
 };
 
 const isDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
 
 const defaultOptions: ThemeOptions = {
-  ...(isDark ? { darkClass: 'dark' } : { lightClass: 'light' }),
+  darkClass: 'dark',
+  lightClass: 'light',
   selector: 'body',
 };
 
@@ -50,13 +51,8 @@ const syncToDom = () => {
 
   switch (theme.value) {
     case Theme.Dark: {
-      if (lightClass) {
-        element.classList.remove(lightClass);
-      }
-
-      if (darkClass) {
-        element.classList.add(darkClass);
-      }
+      element.classList.remove(lightClass);
+      element.classList.add(darkClass);
 
       const darkReaderLock = document.createElement('meta');
       darkReaderLock.name = 'darkreader-lock';
@@ -66,13 +62,8 @@ const syncToDom = () => {
     }
 
     case Theme.Light: {
-      if (lightClass) {
-        element.classList.add(lightClass);
-      }
-
-      if (darkClass) {
-        element.classList.remove(darkClass);
-      }
+      element.classList.add(lightClass);
+      element.classList.remove(darkClass);
 
       const darkReaderLock = document.querySelector('head > meta[name=darkreader-lock]');
       if (darkReaderLock) {

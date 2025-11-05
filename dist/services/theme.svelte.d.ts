@@ -1,13 +1,13 @@
 import { Theme } from '../types.js';
 export type ThemeOptions = {
-    lightClass?: string;
-    darkClass?: string;
-    selector?: string;
+    lightClass: string;
+    darkClass: string;
+    selector: string;
 };
 export declare const setThemeOptions: (newOptions: ThemeOptions) => {
-    lightClass?: string;
-    darkClass?: string;
-    selector?: string;
+    lightClass: string;
+    darkClass: string;
+    selector: string;
 };
 type ThemePreference = {
     value: Theme;
