@@ -1,57 +1,51 @@
 <script lang="ts">
-	import type { HeadingColor, HeadingSize, HeadingTag } from '../../types.js';
-	import { cleanClass } from '../../utils.js';
-	import type { Snippet } from 'svelte';
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { tv } from 'tailwind-variants';
+  import type { FontWeight, HeadingColor, HeadingSize, HeadingTag, TextVariant } from '../../types.js';
+  import { cleanClass } from '../../utilities/internal.js';
+  import Text from '../../internal/Text.svelte';
+  import type { Snippet } from 'svelte';
+  import type { HTMLAttributes } from 'svelte/elements';
+  import { tv } from 'tailwind-variants';
 
-	type Props = {
-		size?: HeadingSize;
-		/**
-		 * The HTML element type.
-		 */
-		tag?: HeadingTag;
-		color?: HeadingColor;
-		class?: string;
+  type Props = {
+    /**
+     * The HTML element type.
+     */
+    tag?: HeadingTag;
+    size?: HeadingSize;
+    color?: HeadingColor;
+    fontWeight?: FontWeight;
+    variant?: TextVariant;
+    class?: string;
 
-		children: Snippet;
-	} & HTMLAttributes<HTMLHeadingElement>;
+    children: Snippet;
+  } & HTMLAttributes<HTMLElement>;
 
-	const {
-		color,
-		tag = 'p',
-		size = 'medium',
-		class: className,
-		children,
-		...restProps
-	}: Props = $props();
+  const {
+    tag = 'p',
+    size = 'medium',
+    fontWeight = 'semi-bold',
+    class: className,
+    children,
+    ...restProps
+  }: Props = $props();
 
-	const styles = tv({
-		base: 'leading-none font-semibold tracking-tight',
-		variants: {
-			color: {
-				muted: 'text-gray-600 dark:text-gray-400',
-				primary: 'text-primary',
-				secondary: 'text-dark',
-				success: 'text-success',
-				danger: 'text-danger',
-				warning: 'text-warning',
-				info: 'text-info',
-			},
-			size: {
-				tiny: 'text-lg',
-				small: 'text-xl',
-				medium: 'text-2xl',
-				large: 'text-3xl',
-				giant: 'text-4xl',
-				title: 'text-5xl',
-			},
-		},
-	});
+  const styles = tv({
+    base: 'leading-none tracking-tight',
+    variants: {
+      size: {
+        tiny: 'text-lg',
+        small: 'text-xl',
+        medium: 'text-2xl',
+        large: 'text-3xl',
+        giant: 'text-4xl',
+        title: 'text-5xl',
+      },
+    },
+  });
 
-	const classList = $derived(cleanClass(styles({ color, size }), className));
+  const classList = $derived(cleanClass(styles({ size }), className));
 </script>
 
-<svelte:element this={tag} class={classList} {...restProps}>
-	{@render children()}
-</svelte:element>
+<Text {tag} {fontWeight} class={classList} {...restProps}>
+  {@render children()}
+</Text>

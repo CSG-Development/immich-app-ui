@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Size } from '../../types.js';
-	import { cleanClass } from '../../utils.js';
+	import { cleanClass } from '../../utilities/internal.js';
 	import type { Snippet } from 'svelte';
 	import { tv } from 'tailwind-variants';
 

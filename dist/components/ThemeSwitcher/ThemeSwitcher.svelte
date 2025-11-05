@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconButton from '../IconButton/IconButton.svelte';
-	import { onThemeChange, theme } from '../../services/theme.svelte.js';
+	import { theme, toggleTheme } from '../../services/theme.svelte.js';
 	import { t } from '../../services/translation.svelte.js';
 	import {
 		Theme,
@@ -9,7 +9,7 @@
 		type TranslationProps,
 		type Variants,
 	} from '../../types.js';
-	import { cleanClass } from '../../utils.js';
+	import { cleanClass } from '../../utilities/internal.js';
 	import { mdiWeatherNight, mdiWeatherSunny } from '@mdi/js';
 
 	type Props = {
@@ -17,7 +17,7 @@
 		class?: string;
 		color?: Color;
 		variant?: Variants;
-		translations?: TranslationProps<'darkTheme'>;
+		translations?: TranslationProps<'dark_theme'>;
 		onChange?: (theme: Theme) => void;
 	};
 
@@ -31,9 +31,8 @@
 	}: Props = $props();
 
 	const handleToggleTheme = () => {
-		theme.value = theme.value === Theme.Dark ? Theme.Light : Theme.Dark;
+		toggleTheme();
 		onChange?.(theme.value);
-		onThemeChange();
 	};
 
 	const themeIcon = $derived(theme.value === Theme.Light ? mdiWeatherSunny : mdiWeatherNight);
@@ -47,7 +46,7 @@
 	icon={themeIcon}
 	onclick={handleToggleTheme}
 	class={cleanClass(className)}
-	aria-label={t('darkTheme', translations)}
+	aria-label={t('dark_theme', translations)}
 	role="switch"
 	aria-checked={theme.value === Theme.Dark}
 />

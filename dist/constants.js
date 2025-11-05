@@ -14,3 +14,8 @@ export var ChildKey;
     ChildKey["ModalBody"] = "modal-body";
     ChildKey["ModalFooter"] = "modal-footer";
 })(ChildKey || (ChildKey = {}));
+export const zIndex = {
+    AppShellSidebar: 'z-30',
+    ModalBackdrop: 'z-40',
+    ModalContent: 'z-50',
+};

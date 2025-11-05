@@ -5,10 +5,13 @@ import type {
 	HTMLButtonAttributes,
 	HTMLInputAttributes,
 	HTMLLabelAttributes,
+	HTMLTextareaAttributes,
 } from 'svelte/elements';
 
 export type Color = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 export type TextColor = Color | 'muted';
+export type TextVariant = 'italic';
+export type FontWeight = 'light' | 'normal' | 'semi-bold' | 'bold' | 'extra-bold';
 export type HeadingColor = TextColor;
 export type Size = 'tiny' | 'small' | 'medium' | 'large' | 'giant';
 export type ModalSize = Size | 'full';
@@ -25,6 +28,8 @@ export enum Theme {
 }
 
 export type TranslationProps<T extends keyof Translations> = { [K in T]?: string };
+
+export type IconLike = string | { path: string };
 
 export type IconProps = {
 	icon: string;
@@ -55,6 +60,7 @@ type ButtonBase = {
 };
 
 export type ButtonProps = ButtonBase & {
+	ref?: HTMLElement | null;
 	fullWidth?: boolean;
 	loading?: boolean;
 	leadingIcon?: string;
@@ -114,6 +120,7 @@ export type FieldContext = {
 } & LabelProps;
 
 type BaseInputProps = {
+	ref?: HTMLInputElement | null;
 	class?: string;
 	value?: string;
 	size?: Size;
@@ -124,13 +131,26 @@ type BaseInputProps = {
 export type InputProps = BaseInputProps & {
 	containerRef?: HTMLElement | null;
 	type?: HTMLInputAttributes['type'];
-	trailingIcon?: Snippet;
+	leadingIcon?: IconLike | Snippet;
+	trailingIcon?: IconLike | Snippet;
+	trailingText?: string;
 };
 
 export type PasswordInputProps = BaseInputProps & {
+	ref?: HTMLInputElement | null;
 	translations?: TranslationProps<'showPassword' | 'hidePassword'>;
 	isVisible?: boolean;
 };
+
+export type TextareaProps = {
+	ref?: HTMLTextAreaElement | null;
+	containerRef?: HTMLElement | null;
+	class?: string;
+	value?: string;
+	size?: Size;
+	shape?: Shape;
+	grow?: boolean;
+} & HTMLTextareaAttributes;
 
 export type SelectItem = {
 	label?: string;
@@ -141,7 +161,6 @@ export type SelectItem = {
 export type SelectCommonProps<T extends SelectItem> = {
 	data: string[] | T[];
 	size?: Size;
-	color?: Color;
 	shape?: Shape;
 	placeholder?: string;
 	class?: string;
@@ -153,6 +172,6 @@ export type SelectProps<T extends SelectItem> = SelectCommonProps<T> & {
 };
 
 export type MultiSelectProps<T extends SelectItem> = SelectCommonProps<T> & {
-	value?: T[];
+	values?: T[];
 	onChange?: (values: T[]) => void;
 };

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { IconProps } from '../../types.js';
-	import { cleanClass } from '../../utils.js';
+	import { cleanClass } from '../../utilities/internal.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	const {
@@ -21,7 +21,7 @@
 		...restProps
 	}: IconProps & HTMLAttributes<EventTarget> = $props();
 
-	const radius = 10; // fixed because of 24x24 viewBox, adjust if needed
+	const radius = 10;
 	const circumference = 2 * Math.PI * radius;
 
 	let progressOffset = $state(

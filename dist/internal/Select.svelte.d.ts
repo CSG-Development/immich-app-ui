@@ -3,7 +3,7 @@ import { Select } from 'bits-ui';
 type T = SelectItem;
 type Props = {
     multiple?: boolean;
-    values?: T[];
+    values: T[];
     asLabel?: (items: T[]) => string;
     onChange?: (values: T[]) => void;
 } & SelectCommonProps<T>;
