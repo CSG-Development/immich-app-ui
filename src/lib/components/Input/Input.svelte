@@ -124,7 +124,7 @@
       </div>
     {/if}
 
-    <Tooltip text={restProps?.title ?? (restProps?.required && !value ? '123' : '')}>
+    <Tooltip text={restProps?.title ?? (restProps?.required && !value ? 'Please fill out this field.' : '')}>
       <input
         id={inputId}
         aria-labelledby={label && labelId}
