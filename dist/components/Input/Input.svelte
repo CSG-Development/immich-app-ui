@@ -95,36 +95,36 @@
   const descriptionId = $derived(description ? `description-${id}` : undefined);
 </script>
 
-<div class="flex w-full flex-col gap-1" bind:this={containerRef}>
-  {#if label}
-    <Label id={labelId} for={inputId} {label} {...labelProps} />
-  {/if}
-
-  {#if description}
-    <Text color="secondary" size="small" id={descriptionId}>{description}</Text>
-  {/if}
-
-  <div
-    class={cleanClass(
-      containerStyles({
-        shape,
-        roundedSize: shape === 'semi-round' ? size : undefined,
-        invalid,
-      }),
-      className,
-    )}
-  >
-    {#if leadingIcon}
-      <div tabindex="-1" class={iconStyles({ size })}>
-        {#if isIconLike(leadingIcon)}
-          <Icon size="60%" icon={leadingIcon} />
-        {:else}
-          {@render leadingIcon()}
-        {/if}
-      </div>
+<Tooltip text={restProps?.title ?? (restProps?.required && !value ? 'Please fill out this field.' : '')}>
+  <div class="flex w-full flex-col gap-1" bind:this={containerRef}>
+    {#if label}
+      <Label id={labelId} for={inputId} {label} {...labelProps} />
     {/if}
 
-    <Tooltip text={restProps?.title ?? (restProps?.required && !value ? 'Please fill out this field.' : '')}>
+    {#if description}
+      <Text color="secondary" size="small" id={descriptionId}>{description}</Text>
+    {/if}
+
+    <div
+      class={cleanClass(
+        containerStyles({
+          shape,
+          roundedSize: shape === 'semi-round' ? size : undefined,
+          invalid,
+        }),
+        className,
+      )}
+    >
+      {#if leadingIcon}
+        <div tabindex="-1" class={iconStyles({ size })}>
+          {#if isIconLike(leadingIcon)}
+            <Icon size="60%" icon={leadingIcon} />
+          {:else}
+            {@render leadingIcon()}
+          {/if}
+        </div>
+      {/if}
+
       <input
         id={inputId}
         aria-labelledby={label && labelId}
@@ -146,24 +146,25 @@
         title=""
         {...restProps}
       />
-    </Tooltip>
-    {#if trailingText}
-      <Text {size} color="muted" class={trailingTextStyles({ padding: trailingIcon ? 'icon' : 'base' })}
-        >{trailingText}</Text
-      >
-    {/if}
 
-    {#if trailingIcon}
-      <div tabindex="-1" class={iconStyles({ size })}>
-        {#if isIconLike(trailingIcon)}
-          <Icon size="60%" icon={trailingIcon} />
-        {:else}
-          {@render trailingIcon()}
-        {/if}
-      </div>
-    {/if}
+      {#if trailingText}
+        <Text {size} color="muted" class={trailingTextStyles({ padding: trailingIcon ? 'icon' : 'base' })}
+          >{trailingText}</Text
+        >
+      {/if}
+
+      {#if trailingIcon}
+        <div tabindex="-1" class={iconStyles({ size })}>
+          {#if isIconLike(trailingIcon)}
+            <Icon size="60%" icon={trailingIcon} />
+          {:else}
+            {@render trailingIcon()}
+          {/if}
+        </div>
+      {/if}
+    </div>
   </div>
-</div>
+</Tooltip>
 
 <style>
   input::-ms-reveal {
