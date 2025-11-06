@@ -32,18 +32,18 @@
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    let newX = e.clientX + offset;
+    let newX = e.pageX + offset;
     let newY = e.clientY + offset;
 
     const maxX = vw - tooltipW;
     const maxY = vh - tooltipH - offset;
 
     if (newX > maxX) {
-      newX = e.clientX;
-      newY = e.clientY + offset + 10;
+      newX = e.pageX;
+      newY = e.pageY + offset + 10;
     }
     if (newY > maxY) {
-      newY = e.clientY - tooltipH - offset;
+      newY = e.pageY - tooltipH - offset;
     }
 
     posX = Math.max(offset, Math.min(newX, maxX));
