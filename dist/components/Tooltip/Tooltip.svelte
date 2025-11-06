@@ -96,16 +96,11 @@
 {#if isVisible && text}
   <div
     bind:this={tooltipEl}
-    class="pointer-events-none fixed z-50 inline-block w-max wrap-break-word whitespace-normal"
+    class={cleanClass('pointer-events-none fixed z-50 inline-block w-max wrap-break-word whitespace-normal', className)}
     style={tooltipStyle}
     aria-hidden="true"
   >
-    <Text
-      class={cleanClass(
-        'border-gray-border bg-gray-bg border px-2 py-1 text-sm text-white/87 dark:bg-white dark:text-black/87',
-        className,
-      )}
-    >
+    <Text class="border-gray-border bg-gray-bg border px-2 py-1 text-sm text-white/87 dark:bg-white dark:text-black/87">
       {text}
     </Text>
   </div>
