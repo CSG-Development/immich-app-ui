@@ -6,6 +6,7 @@
   import type { InputProps } from '$lib/types.js';
   import { cleanClass, generateId, isIconLike } from '$lib/utilities/internal.js';
   import { tv } from 'tailwind-variants';
+  import Tooltip from '../Tooltip/Tooltip.svelte';
 
   let {
     ref = $bindable(null),
@@ -123,26 +124,29 @@
       </div>
     {/if}
 
-    <input
-      id={inputId}
-      aria-labelledby={label && labelId}
-      {required}
-      aria-required={required}
-      {disabled}
-      aria-disabled={disabled}
-      aria-describedby={descriptionId}
-      readonly={readOnly}
-      size={inputSize}
-      aria-readonly={readOnly}
-      class={inputStyles({
-        textSize: size,
-        leadingPadding: leadingIcon ? 'icon' : 'base',
-        trailingPadding: trailingIcon || trailingText ? 'icon' : 'base',
-      })}
-      bind:this={ref}
-      bind:value
-      {...restProps}
-    />
+    <Tooltip text={restProps?.title ?? (restProps?.required && !value ? '123' : '')}>
+      <input
+        id={inputId}
+        aria-labelledby={label && labelId}
+        {required}
+        aria-required={required}
+        {disabled}
+        aria-disabled={disabled}
+        aria-describedby={descriptionId}
+        readonly={readOnly}
+        size={inputSize}
+        aria-readonly={readOnly}
+        class={inputStyles({
+          textSize: size,
+          leadingPadding: leadingIcon ? 'icon' : 'base',
+          trailingPadding: trailingIcon || trailingText ? 'icon' : 'base',
+        })}
+        bind:this={ref}
+        bind:value
+        title=""
+        {...restProps}
+      />
+    </Tooltip>
     {#if trailingText}
       <Text {size} color="muted" class={trailingTextStyles({ padding: trailingIcon ? 'icon' : 'base' })}
         >{trailingText}</Text

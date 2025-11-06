@@ -23,7 +23,7 @@
     <HelperText>Note: this is helper text</HelperText>
   </Field>
   <Field label="Invalid" invalid>
-    <Input placeholder="label" />
+    <Input placeholder="label" required />
     <HelperText color="danger">Must be valid</HelperText>
   </Field>
 </Stack>
