@@ -33,7 +33,7 @@
     const vh = window.innerHeight;
 
     let newX = e.pageX + offset;
-    let newY = e.clientY + offset;
+    let newY = e.pageY + offset;
 
     const maxX = vw - tooltipW;
     const maxY = vh - tooltipH - offset;
