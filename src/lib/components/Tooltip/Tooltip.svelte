@@ -87,13 +87,26 @@
     }
     isVisible = false;
   };
+
+  let isMobile = $state(false);
+
+  const update = () => {
+    isMobile =
+      window.matchMedia('(pointer: coarse)').matches || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  };
+
+  $effect(() => {
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  });
 </script>
 
 <div role="presentation" onmouseenter={show} onmouseleave={hide} onmousemove={onMouseMove}>
   {@render children?.()}
 </div>
 
-{#if isVisible && text}
+{#if isVisible && text && !isMobile}
   <div
     bind:this={tooltipEl}
     class={cleanClass('pointer-events-none fixed z-50 inline-block w-max wrap-break-word whitespace-normal', className)}
