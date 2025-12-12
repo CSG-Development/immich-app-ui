@@ -42,7 +42,7 @@
     variants: {
       fillColor: {
         default: 'border-gray-400 bg-gray-300 dark:border-gray-500 dark:bg-gray-400',
-        primary: 'bg-primary/50 dark:bg-primary border-transparent',
+        primary: 'bg-primary dark:bg-primary border-transparent',
         secondary: 'bg-dark/50 border-transparent',
         success: 'bg-success/50 border-transparent',
         danger: 'bg-danger/50 border-transparent',
@@ -61,7 +61,7 @@
       },
       fillColor: {
         default: 'bg-gray-400 dark:bg-gray-500',
-        primary: 'bg-[#4250af]',
+        primary: 'bg-white',
         secondary: 'bg-dark',
         success: 'bg-success',
         danger: 'bg-danger',
