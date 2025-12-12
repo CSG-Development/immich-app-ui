@@ -4,7 +4,7 @@
   --color-primary: rgb(var(--immich-ui-primary));
   --color-light: rgb(var(--immich-ui-light));
   --color-bg: rgb(var(--immich-ui-bg));
-  --color-dark: rgb(var(--immich-ui-dark));
+  --color-dark: rgb(var(--immich-ui-dark) / 0.87);
   --color-success: rgb(var(--immich-ui-success));
   --color-danger: rgb(var(--immich-ui-danger));
   --color-warning: rgb(var(--immich-ui-warning));
@@ -40,7 +40,7 @@
     --immich-ui-primary: 100 181 246;
     --immich-ui-light: 0 0 0;
     --immich-ui-bg: 61 62 65;
-    --immich-ui-dark: 229 231 235;
+    --immich-ui-dark: 255 255 255;
     --immich-ui-success: 72 237 152;
     --immich-ui-danger: 242, 145, 138;
     --immich-ui-warning: 254 197 132;
