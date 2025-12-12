@@ -18,7 +18,7 @@
     NavbarGroup,
     NavbarItem,
     siteCommands,
-    SiteFooter,
+    /* SiteFooter, */
     Text,
     theme,
     ThemeSwitcher,
@@ -138,7 +138,7 @@
     <div class="grow">
       {@render children?.()}
     </div>
-    <SiteFooter />
+    <!-- <SiteFooter /> -->
   </section>
 </AppShell>
 

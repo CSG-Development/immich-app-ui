@@ -6,7 +6,6 @@
   import type { InputProps } from '../../types.js';
   import { cleanClass, generateId, isIconLike } from '../../utilities/internal.js';
   import { tv } from 'tailwind-variants';
-  import Tooltip from '../Tooltip/Tooltip.svelte';
 
   let {
     ref = $bindable(null),
@@ -95,76 +94,72 @@
   const descriptionId = $derived(description ? `description-${id}` : undefined);
 </script>
 
-<Tooltip text={restProps?.title ?? (restProps?.required && !value ? 'Please fill out this field.' : '')}>
-  <div class="flex w-full flex-col gap-1" bind:this={containerRef}>
-    {#if label}
-      <Label id={labelId} for={inputId} {label} {...labelProps} />
+<div class="flex w-full flex-col gap-1" bind:this={containerRef}>
+  {#if label}
+    <Label id={labelId} for={inputId} {label} {...labelProps} />
+  {/if}
+
+  {#if description}
+    <Text color="secondary" size="small" id={descriptionId}>{description}</Text>
+  {/if}
+
+  <div
+    class={cleanClass(
+      containerStyles({
+        shape,
+        roundedSize: shape === 'semi-round' ? size : undefined,
+        invalid,
+      }),
+      className,
+    )}
+  >
+    {#if leadingIcon}
+      <div tabindex="-1" class={iconStyles({ size })}>
+        {#if isIconLike(leadingIcon)}
+          <Icon size="60%" icon={leadingIcon} />
+        {:else}
+          {@render leadingIcon()}
+        {/if}
+      </div>
     {/if}
 
-    {#if description}
-      <Text color="secondary" size="small" id={descriptionId}>{description}</Text>
+    <input
+      id={inputId}
+      aria-labelledby={label && labelId}
+      {required}
+      aria-required={required}
+      {disabled}
+      aria-disabled={disabled}
+      aria-describedby={descriptionId}
+      readonly={readOnly}
+      size={inputSize}
+      aria-readonly={readOnly}
+      class={inputStyles({
+        textSize: size,
+        leadingPadding: leadingIcon ? 'icon' : 'base',
+        trailingPadding: trailingIcon || trailingText ? 'icon' : 'base',
+      })}
+      bind:this={ref}
+      bind:value
+      {...restProps}
+    />
+    {#if trailingText}
+      <Text {size} color="muted" class={trailingTextStyles({ padding: trailingIcon ? 'icon' : 'base' })}
+        >{trailingText}</Text
+      >
     {/if}
 
-    <div
-      class={cleanClass(
-        containerStyles({
-          shape,
-          roundedSize: shape === 'semi-round' ? size : undefined,
-          invalid,
-        }),
-        className,
-      )}
-    >
-      {#if leadingIcon}
-        <div tabindex="-1" class={iconStyles({ size })}>
-          {#if isIconLike(leadingIcon)}
-            <Icon size="60%" icon={leadingIcon} />
-          {:else}
-            {@render leadingIcon()}
-          {/if}
-        </div>
-      {/if}
-
-      <input
-        id={inputId}
-        aria-labelledby={label && labelId}
-        {required}
-        aria-required={required}
-        {disabled}
-        aria-disabled={disabled}
-        aria-describedby={descriptionId}
-        readonly={readOnly}
-        size={inputSize}
-        aria-readonly={readOnly}
-        class={inputStyles({
-          textSize: size,
-          leadingPadding: leadingIcon ? 'icon' : 'base',
-          trailingPadding: trailingIcon || trailingText ? 'icon' : 'base',
-        })}
-        bind:this={ref}
-        bind:value
-        title=""
-        {...restProps}
-      />
-
-      {#if trailingText}
-        <Text {size} color="muted" class={trailingTextStyles({ padding: trailingIcon ? 'icon' : 'base' })}
-          >{trailingText}</Text
-        >
-      {/if}
-
-      {#if trailingIcon}
-        <div tabindex="-1" class={iconStyles({ size })}>
-          {#if isIconLike(trailingIcon)}
-            <Icon size="60%" icon={trailingIcon} />
-          {:else}
-            {@render trailingIcon()}
-          {/if}
-        </div>
-      {/if}
-    </div>
+    {#if trailingIcon}
+      <div tabindex="-1" class={iconStyles({ size })}>
+        {#if isIconLike(trailingIcon)}
+          <Icon size="60%" icon={trailingIcon} />
+        {:else}
+          {@render trailingIcon()}
+        {/if}
+      </div>
+    {/if}
   </div>
-</Tooltip>
+</div>
 
 <style>
   input::-ms-reveal {
