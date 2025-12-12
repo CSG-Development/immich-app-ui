@@ -5,6 +5,7 @@ type Props = {
     icon?: string | boolean;
     size?: ModalSize;
     class?: string;
+    bodyClass?: string;
     expandable?: boolean;
     closeOnEsc?: boolean;
     closeOnBackdropClick?: boolean;

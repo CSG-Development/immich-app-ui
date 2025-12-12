@@ -1,135 +1,133 @@
 <script lang="ts">
-	import { withChildrenSnippets } from '../../common/use-child.svelte.js';
-	import Card from '../Card/Card.svelte';
-	import CardBody from '../Card/CardBody.svelte';
-	import CardFooter from '../Card/CardFooter.svelte';
-	import CardHeader from '../Card/CardHeader.svelte';
-	import CardTitle from '../Card/CardTitle.svelte';
-	import CloseButton from '../CloseButton/CloseButton.svelte';
-	import Icon from '../Icon/Icon.svelte';
-	import Logo from '../Logo/Logo.svelte';
-	import { ChildKey, zIndex } from '../../constants.js';
-	import type { ModalSize } from '../../types.js';
-	import { cleanClass } from '../../utilities/internal.js';
-	import { Dialog } from 'bits-ui';
-	import { tick, type Snippet } from 'svelte';
-	import { tv } from 'tailwind-variants';
+  import { withChildrenSnippets } from '../../common/use-child.svelte.js';
+  import Card from '../Card/Card.svelte';
+  import CardBody from '../Card/CardBody.svelte';
+  import CardFooter from '../Card/CardFooter.svelte';
+  import CardHeader from '../Card/CardHeader.svelte';
+  import CardTitle from '../Card/CardTitle.svelte';
+  import CloseButton from '../CloseButton/CloseButton.svelte';
+  import Icon from '../Icon/Icon.svelte';
+  import Logo from '../Logo/Logo.svelte';
+  import { ChildKey, zIndex } from '../../constants.js';
+  import type { ModalSize } from '../../types.js';
+  import { cleanClass } from '../../utilities/internal.js';
+  import { Dialog } from 'bits-ui';
+  import { tick, type Snippet } from 'svelte';
+  import { tv } from 'tailwind-variants';
 
-	type Props = {
-		title?: string;
-		icon?: string | boolean;
-		size?: ModalSize;
-		class?: string;
-		expandable?: boolean;
-		closeOnEsc?: boolean;
-		closeOnBackdropClick?: boolean;
-		children: Snippet;
-		onClose?: () => void;
-		onEscapeKeydown?: (event: KeyboardEvent) => void;
-	};
+  type Props = {
+    title?: string;
+    icon?: string | boolean;
+    size?: ModalSize;
+    class?: string;
+    bodyClass?: string;
+    expandable?: boolean;
+    closeOnEsc?: boolean;
+    closeOnBackdropClick?: boolean;
+    children: Snippet;
+    onClose?: () => void;
+    onEscapeKeydown?: (event: KeyboardEvent) => void;
+  };
 
-	let {
-		size = 'medium',
-		onClose,
-		onEscapeKeydown,
-		icon = true,
-		title,
-		class: className,
-		closeOnEsc = true,
-		closeOnBackdropClick = false,
-		children,
-	}: Props = $props();
+  let {
+    size = 'medium',
+    onClose,
+    onEscapeKeydown,
+    icon = true,
+    title,
+    class: className,
+    bodyClass: bodyClassName,
+    closeOnEsc = true,
+    closeOnBackdropClick = false,
+    children,
+  }: Props = $props();
 
-	const modalStyles = tv({
-		base: `bg-light dark:bg-subtle border-subtle shadow-primary/20 flex rounded-none border shadow-sm sm:rounded-2xl dark:border-white/10`,
-		variants: {
-			size: {
-				tiny: 'h-full sm:h-min md:max-w-sm',
-				small: 'h-full sm:h-min md:max-w-md',
-				medium: 'h-full sm:h-min md:max-w-(--breakpoint-sm)',
-				large: 'h-full sm:h-min md:max-w-(--breakpoint-md)',
-				giant: 'h-full sm:h-min md:max-w-(--breakpoint-lg)',
-				full: 'h-full w-full',
-			},
-		},
-	});
+  const modalStyles = tv({
+    base: `bg-light dark:bg-subtle border-subtle shadow-primary/20 flex rounded-none border shadow-sm sm:rounded-2xl dark:border-white/10`,
+    variants: {
+      size: {
+        tiny: 'h-full sm:h-min md:max-w-sm',
+        small: 'h-full sm:h-min md:max-w-md',
+        medium: 'h-full sm:h-min md:max-w-(--breakpoint-sm)',
+        large: 'h-full sm:h-min md:max-w-(--breakpoint-md)',
+        giant: 'h-full sm:h-min md:max-w-(--breakpoint-lg)',
+        full: 'h-full w-full',
+      },
+    },
+  });
 
-	const modalContentStyles = tv({
-		base: `${zIndex.ModalContent} fixed inset-0 m-auto flex max-h-dvh grow sm:p-4`,
-		variants: {
-			size: {
-				tiny: 'sm:h-min md:max-w-sm',
-				small: 'sm:h-min md:max-w-md',
-				medium: 'sm:h-min md:max-w-(--breakpoint-sm)',
-				large: 'sm:h-min md:max-w-(--breakpoint-md)',
-				giant: 'sm:h-min md:max-w-(--breakpoint-lg)',
-				full: '',
-			},
-		},
-	});
+  const modalContentStyles = tv({
+    base: `${zIndex.ModalContent} fixed inset-0 m-auto flex max-h-dvh grow sm:p-4`,
+    variants: {
+      size: {
+        tiny: 'sm:h-min md:max-w-sm',
+        small: 'sm:h-min md:max-w-md',
+        medium: 'sm:h-min md:max-w-(--breakpoint-sm)',
+        large: 'sm:h-min md:max-w-(--breakpoint-md)',
+        giant: 'sm:h-min md:max-w-(--breakpoint-lg)',
+        full: '',
+      },
+    },
+  });
 
-	const { getChildren: getChildSnippet } = withChildrenSnippets(ChildKey.Modal);
-	const headerChildren = $derived(getChildSnippet(ChildKey.ModalHeader));
-	const bodyChildren = $derived(getChildSnippet(ChildKey.ModalBody));
-	const footerChildren = $derived(getChildSnippet(ChildKey.ModalFooter));
+  const { getChildren: getChildSnippet } = withChildrenSnippets(ChildKey.Modal);
+  const headerChildren = $derived(getChildSnippet(ChildKey.ModalHeader));
+  const bodyChildren = $derived(getChildSnippet(ChildKey.ModalBody));
+  const footerChildren = $derived(getChildSnippet(ChildKey.ModalFooter));
 
-	const handleClose = async () => {
-		// wait for bits-ui to complete its event cycle
-		await tick();
-		await new Promise((resolve) => setTimeout(resolve, 10));
+  const handleClose = async () => {
+    // wait for bits-ui to complete its event cycle
+    await tick();
+    await new Promise((resolve) => setTimeout(resolve, 10));
 
-		onClose?.();
-	};
+    onClose?.();
+  };
 
-	let cardRef = $state<HTMLElement | null>(null);
+  let cardRef = $state<HTMLElement | null>(null);
 
-	const interactOutsideBehavior = $derived(closeOnBackdropClick ? 'close' : 'ignore');
-	const escapeKeydownBehavior = $derived(closeOnEsc ? 'close' : 'ignore');
+  const interactOutsideBehavior = $derived(closeOnBackdropClick ? 'close' : 'ignore');
+  const escapeKeydownBehavior = $derived(closeOnEsc ? 'close' : 'ignore');
 </script>
 
 <Dialog.Root open={true} onOpenChange={(isOpen: boolean) => !isOpen && handleClose()}>
-	<Dialog.Portal>
-		<Dialog.Overlay
-			class="{zIndex.ModalBackdrop} fixed start-0 top-0  flex h-dvh max-h-dvh w-screen bg-black/30"
-		/>
-		<Dialog.Content
-			{onEscapeKeydown}
-			{escapeKeydownBehavior}
-			{interactOutsideBehavior}
-			class={cleanClass(modalContentStyles({ size }))}
-		>
-			<div class={cleanClass('flex grow flex-col justify-center')}>
-				<Card bind:ref={cardRef} class={cleanClass(modalStyles({ size }), className)}>
-					<CardHeader class="border-b border-gray-200 px-5 py-3 dark:border-white/10">
-						{#if headerChildren}
-							{@render headerChildren.snippet()}
-						{:else if title}
-							<div class="flex items-center justify-between gap-2">
-								{#if typeof icon === 'string'}
-									<Icon {icon} size="1.5rem" aria-hidden />
-								{:else if icon}
-									<Logo variant="icon" size="tiny" />
-								{/if}
-								<CardTitle tag="p" class="text-dark/90 grow text-lg font-semibold"
-									>{title}</CardTitle
-								>
-								<CloseButton class="-me-2" onclick={() => handleClose()} />
-							</div>
-						{/if}
-					</CardHeader>
+  <Dialog.Portal>
+    <Dialog.Overlay class="{zIndex.ModalBackdrop} fixed start-0 top-0  flex h-dvh max-h-dvh w-screen bg-black/30" />
+    <Dialog.Content
+      {onEscapeKeydown}
+      {escapeKeydownBehavior}
+      {interactOutsideBehavior}
+      class={cleanClass(modalContentStyles({ size }))}
+    >
+      <div class={cleanClass('flex grow flex-col justify-center')}>
+        <Card bind:ref={cardRef} class={cleanClass(modalStyles({ size }), className)}>
+          <CardHeader class="border-b border-gray-200 px-5 py-3 dark:border-white/10">
+            {#if headerChildren}
+              {@render headerChildren.snippet()}
+            {:else if title}
+              <div class="flex items-center justify-between gap-2">
+                {#if typeof icon === 'string'}
+                  <Icon {icon} size="1.5rem" aria-hidden />
+                {:else if icon}
+                  <Logo variant="icon" size="tiny" />
+                {/if}
+                <CardTitle tag="p" class="text-dark/90 grow text-lg font-semibold">{title}</CardTitle>
+                <CloseButton class="-me-2" onclick={() => handleClose()} />
+              </div>
+            {/if}
+          </CardHeader>
 
-					<CardBody class="grow px-5">
-						{@render bodyChildren?.snippet()}
-					</CardBody>
+          <CardBody class={cleanClass('grow px-5', bodyClassName)}>
+            {@render bodyChildren?.snippet()}
+          </CardBody>
 
-					{#if footerChildren}
-						<CardFooter class="border-t border-gray-200 dark:border-white/10">
-							{@render footerChildren.snippet()}
-						</CardFooter>
-					{/if}
-				</Card>
-			</div>
-		</Dialog.Content>
-	</Dialog.Portal>
+          {#if footerChildren}
+            <CardFooter class="border-t border-gray-200 dark:border-white/10">
+              {@render footerChildren.snippet()}
+            </CardFooter>
+          {/if}
+        </Card>
+      </div>
+    </Dialog.Content>
+  </Dialog.Portal>
 </Dialog.Root>
 {@render children?.()}
