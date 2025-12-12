@@ -4,7 +4,7 @@
   --color-primary: rgb(var(--immich-ui-primary));
   --color-light: rgb(var(--immich-ui-light));
   --color-bg: rgb(var(--immich-ui-bg));
-  --color-dark: rgb(var(--immich-ui-dark) / 0.87);
+  --color-dark: rgb(var(--immich-ui-dark));
   --color-success: rgb(var(--immich-ui-success));
   --color-danger: rgb(var(--immich-ui-danger));
   --color-warning: rgb(var(--immich-ui-warning));
@@ -21,11 +21,11 @@
   .light {
     /* light */
     --immich-ui-primary: 25 118 210;
-    --immich-ui-dark: 58 58 58;
+    --immich-ui-dark: 0 0 0 / 0.87;
     --immich-ui-light: 255 255 255;
     --immich-ui-bg: 240 241 245;
     --immich-ui-success: 16 188 99;
-    --immich-ui-danger: 160, 42, 33;
+    --immich-ui-danger: 160 42 33;
     --immich-ui-warning: 216 143 64;
     --immich-ui-info: 8 111 230;
     --immich-ui-gray: 246 246 246;
@@ -42,7 +42,7 @@
     --immich-ui-bg: 61 62 65;
     --immich-ui-dark: 255 255 255;
     --immich-ui-success: 72 237 152;
-    --immich-ui-danger: 242, 145, 138;
+    --immich-ui-danger: 242 145 138;
     --immich-ui-warning: 254 197 132;
     --immich-ui-info: 121 183 254;
     --immich-ui-gray: 33 33 33;
