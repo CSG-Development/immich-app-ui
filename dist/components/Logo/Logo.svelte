@@ -47,7 +47,7 @@
 
       variant: {
         stacked: '',
-        inline: 'h-[36px]',
+        inline: 'h-[34px]',
         logo: 'bg-light aspect-square rounded-full shadow-lg',
         icon: 'aspect-square',
       },
