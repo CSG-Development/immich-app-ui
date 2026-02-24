@@ -30,6 +30,7 @@ export { default as CodeBlock } from '$lib/components/CodeBlock/CodeBlock.svelte
 export { default as CommandPalette } from '$lib/components/CommandPalette/CommandPalette.svelte';
 export { default as ConfirmModal } from '$lib/components/ConfirmModal/ConfirmModal.svelte';
 export { default as Container } from '$lib/components/Container/Container.svelte';
+export { default as DateInput } from '$lib/components/DateInput/DateInput.svelte';
 export { default as Field } from '$lib/components/Field/Field.svelte';
 export { default as FormatBytes } from '$lib/components/FormatBytes/FormatBytes.svelte';
 export { default as Heading } from '$lib/components/Heading/Heading.svelte';
