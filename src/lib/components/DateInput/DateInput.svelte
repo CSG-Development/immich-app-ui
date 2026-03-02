@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DatePicker, type SegmentPart } from 'bits-ui';
+  import { DatePicker } from 'bits-ui';
   import { mdiCalendarRangeOutline, mdiChevronLeft, mdiChevronRight } from '@mdi/js';
   import Icon from '$lib/components/Icon/Icon.svelte';
   import type { InputProps } from '../../types.js';
@@ -12,6 +12,10 @@
   const { label = 'Label', value = $bindable<string>() }: Props & InputProps = $props();
 
   let selectedValue = $state<DateValue>(value);
+
+  $effect(() => {
+    console.log(selectedValue);
+  });
 
   function getValue() {
     return selectedValue;
@@ -31,16 +35,7 @@
     return selectedValue ? value : today(getLocalTimeZone()).year;
   };
 
-  const swapSegments = (
-    segments: {
-      part: SegmentPart;
-      value: string;
-    }[],
-    index1: number,
-    index2: number,
-  ) => {
-    [segments[index1], segments[index2]] = [segments[index2], segments[index1]];
-  };
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 </script>
 
 <DatePicker.Root bind:value={getValue, setValue} closeOnDateSelect={false} maxValue={today(getLocalTimeZone())}>
@@ -76,12 +71,34 @@
       {/snippet}
     </DatePicker.Input>
     <DatePicker.Content sideOffset={6} class="z-50">
-      <DatePicker.Calendar class="shadow-popover bg-bg rounded-[28px] p-3 select-none md:w-123">
+      <DatePicker.Calendar class="shadow-popover bg-bg rounded-[28px] select-none md:w-123">
         {#snippet children({ months, weekdays })}
-          <DatePicker.Header class="flex items-center justify-between">
+          {console.log(months)}
+          <div class="border-gray-border flex w-full flex-col gap-4 border-b px-6 pt-4 pb-3">
+            <span class="font-bold">Select date</span>
+            <span class="text-[34px]"
+              >{selectedValue
+                ? `${monthNames[selectedValue.month - 1]} ${selectedValue.day.toLocaleString()}`
+                : `${monthNames[today(getLocalTimeZone()).month - 1]} ${today(getLocalTimeZone()).day.toLocaleString()}`}</span
+            >
+          </div>
+          <DatePicker.Header class="flex items-center justify-between p-3 pb-0 pl-6">
             <DatePicker.Heading>
               {#snippet children({ headingValue })}
-                <span>{headingValue.split(' ')[0]}</span><DatePicker.YearSelect class="focus-visible:outline-0!" />
+                <span>{headingValue.split(' ')[0]}</span><DatePicker.YearSelect
+                  class="pl-1 focus-visible:outline-0!"
+                  style={`
+                    appearance: none; 
+                    -webkit-appearance: none; 
+                    -moz-appearance: none;   
+                    width: 65px;
+                    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>menu-down</title><path d="M7,10L12,15L17,10H7Z" /></svg>');
+                    background-repeat: no-repeat;
+                    background-position: right;
+                    background-size: 18px;
+                    cursor: pointer;
+                  `}
+                />
               {/snippet}
             </DatePicker.Heading>
             <div>
@@ -97,7 +114,7 @@
               </DatePicker.NextButton>
             </div>
           </DatePicker.Header>
-          <div class="flex flex-col space-y-4 pt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+          <div class="flex flex-col space-y-4 p-3 pt-0 sm:flex-row sm:space-y-0 sm:space-x-4">
             {#each months as month (month.value)}
               <DatePicker.Grid class="w-full border-collapse space-y-1 select-none">
                 <DatePicker.GridHead>
@@ -140,6 +157,3 @@
     </DatePicker.Content>
   </div>
 </DatePicker.Root>
-
-<style>
-</style>
