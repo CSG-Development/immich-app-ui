@@ -73,7 +73,6 @@
     <DatePicker.Content sideOffset={6} class="z-50">
       <DatePicker.Calendar class="shadow-popover bg-bg rounded-[28px] select-none md:w-123">
         {#snippet children({ months, weekdays })}
-          {console.log(months)}
           <div class="border-gray-border flex w-full flex-col gap-4 border-b px-6 pt-4 pb-3">
             <span class="font-bold">Select date</span>
             <span class="text-[34px]"
