@@ -5,7 +5,7 @@
 	import Icon from '../Icon/Icon.svelte';
 	import Text from '../Text/Text.svelte';
 	import type { Color, Size } from '../../types.js';
-	import { cleanClass } from '../../utils.js';
+	import { cleanClass, resolveIcon } from '../../utilities/internal.js';
 	import {
 		mdiAlertOutline,
 		mdiCheckCircleOutline,
@@ -66,16 +66,17 @@
 		setTimeout(handleClose, duration);
 	}
 
-	const icons: Partial<Record<Color, string>> = {
-		success: mdiCheckCircleOutline,
-		warning: mdiAlertOutline,
-		danger: mdiCloseCircleOutline,
-	};
-
 	const icon = $derived(
-		iconOverride === false
-			? undefined
-			: iconOverride || (icons[color] ?? mdiInformationVariantCircleOutline),
+		resolveIcon({
+			icons: {
+				success: mdiCheckCircleOutline,
+				warning: mdiAlertOutline,
+				danger: mdiCloseCircleOutline,
+			},
+			color,
+			override: iconOverride,
+			fallback: mdiInformationVariantCircleOutline,
+		}),
 	);
 </script>
 

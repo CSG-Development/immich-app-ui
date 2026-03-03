@@ -1,14 +1,15 @@
-import type { Size, TextColor } from '../../types.js';
+import Text from '../../internal/Text.svelte';
+import type { FontWeight, Size, TextColor, TextVariant } from '../../types.js';
 import type { Snippet } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
 type Props = {
-    color?: TextColor;
-    class?: string;
     size?: Size;
+    color?: TextColor;
+    fontWeight?: FontWeight;
+    variant?: TextVariant;
+    class?: string;
     children: Snippet;
-    variant?: 'italic';
-    fontWeight?: 'light' | 'normal' | 'semi-bold' | 'bold';
-} & HTMLAttributes<HTMLParagraphElement>;
+} & HTMLAttributes<HTMLElement>;
 declare const Text: import("svelte").Component<Props, {}, "">;
 type Text = ReturnType<typeof Text>;
 export default Text;

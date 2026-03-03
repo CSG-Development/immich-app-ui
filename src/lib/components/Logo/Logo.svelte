@@ -1,60 +1,60 @@
 <script lang="ts">
-	import inlineDark from '$lib/assets/immich-logo-inline-dark.svg';
-	import inlineLight from '$lib/assets/immich-logo-inline-light.svg';
-	import stackedDark from '$lib/assets/immich-logo-stacked-dark.svg';
-	import stackedLight from '$lib/assets/immich-logo-stacked-light.svg';
-	import icon from '$lib/assets/immich-logo.svg';
-	import { theme } from '$lib/services/theme.svelte.js';
-	import { Theme, type Size } from '$lib/types.js';
-	import { cleanClass } from '$lib/utils.js';
-	import { tv } from 'tailwind-variants';
+  import inlineDark from '$lib/assets/immich-logo-inline-dark.svg';
+  import inlineLight from '$lib/assets/immich-logo-inline-light.svg';
+  import stackedDark from '$lib/assets/immich-logo-stacked-dark.svg';
+  import stackedLight from '$lib/assets/immich-logo-stacked-light.svg';
+  import icon from '$lib/assets/immich-logo.svg';
+  import { theme } from '$lib/services/theme.svelte.js';
+  import { Theme, type Size } from '$lib/types.js';
+  import { cleanClass } from '$lib/utilities/internal.js';
+  import { tv } from 'tailwind-variants';
 
-	type Props = {
-		size?: Size | 'landing' | 'stacked';
-		variant?: 'stacked' | 'inline' | 'logo' | 'icon';
-		class?: string;
-	};
+  type Props = {
+    size?: Size | 'landing' | 'stacked';
+    variant?: 'stacked' | 'inline' | 'logo' | 'icon';
+    class?: string;
+  };
 
-	const { variant = 'logo', size = 'medium', class: className }: Props = $props();
+  const { variant = 'logo', size = 'medium', class: className }: Props = $props();
 
-	const getUrl = (variant: Props['variant']): string => {
-		switch (variant) {
-			case 'stacked': {
-				return theme.value === Theme.Dark ? stackedDark : stackedLight;
-			}
+  const getUrl = (variant: Props['variant']): string => {
+    switch (variant) {
+      case 'stacked': {
+        return theme.value === Theme.Dark ? stackedDark : stackedLight;
+      }
 
-			case 'inline': {
-				return theme.value === Theme.Dark ? inlineDark : inlineLight;
-			}
+      case 'inline': {
+        return theme.value === Theme.Dark ? inlineDark : inlineLight;
+      }
 
-			default: {
-				return icon;
-			}
-		}
-	};
+      default: {
+        return icon;
+      }
+    }
+  };
 
-	const styles = tv({
-		variants: {
-			size: {
-				tiny: 'h-8',
-				small: 'h-10',
-				medium: 'h-12',
-				large: 'h-16',
-				giant: 'h-24',
-				landing: 'h-64',
-				stacked: 'h-[180px]',
-			},
+  const styles = tv({
+    variants: {
+      size: {
+        tiny: 'h-8',
+        small: 'h-10',
+        medium: 'h-12',
+        large: 'h-16',
+        giant: 'h-24',
+        landing: 'h-64',
+        stacked: 'h-[180px]',
+      },
 
-			variant: {
-				stacked: '',
-				inline: 'h-[36px]',
-				logo: 'bg-light aspect-square rounded-full shadow-lg',
-				icon: 'aspect-square',
-			},
-		},
-	});
+      variant: {
+        stacked: '',
+        inline: 'h-[34px]',
+        logo: 'bg-light aspect-square rounded-full shadow-lg',
+        icon: 'aspect-square',
+      },
+    },
+  });
 
-	const src = $derived(getUrl(variant));
+  const src = $derived(getUrl(variant));
 </script>
 
 <img {src} class={cleanClass(styles({ size, variant }), className)} alt="Curator Photos logo" />

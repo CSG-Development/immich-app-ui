@@ -4,7 +4,7 @@ import type { HTMLAttributes } from 'svelte/elements';
 type Props = {
     color?: TextColor;
     size?: Size;
-    variant?: 'filled';
+    variant?: 'filled' | 'ghost' | 'outline';
     class?: string;
     children: Snippet;
 } & HTMLAttributes<HTMLElement>;

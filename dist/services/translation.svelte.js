@@ -1,8 +1,24 @@
 const defaultTranslations = {
+    // common
+    cancel: 'Cancel',
     close: 'Close',
-    showPassword: 'Show password',
-    hidePassword: 'Hide password',
-    darkTheme: 'Toggle dark theme',
+    confirm: 'Confirm',
+    // code
+    code_copy: 'Copy',
+    code_copied: 'Copied',
+    // search
+    search_placeholder: 'Search...',
+    search_no_results: 'No results',
+    search_recently_used: 'Recently used',
+    // modal
+    prompt_default: 'Are you sure you want to do this?',
+    // password input
+    show_password: 'Show password',
+    hide_password: 'Hide password',
+    // theme switcher
+    dark_theme: 'Toggle dark theme',
+    // command palette
+    command_palette_prompt_default: 'Quickly find pages, actions, or commands',
 };
 let translations = $state(defaultTranslations);
 export const translate = (key, overrides) => overrides?.[key] ?? translations[key];

@@ -1,8 +1,8 @@
 import type { IconProps } from '../../types.js';
 type Props = {
     title: string;
-    active?: boolean;
     href: string;
+    active?: boolean;
     variant?: 'compact';
     isActive?: () => boolean;
     icon?: string | IconProps;
