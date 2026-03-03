@@ -19,5 +19,6 @@ export const styleVariants = {
     medium: 'text-base',
     large: 'text-lg',
     giant: 'text-xl',
+    standard: 'text-sm',
   },
 };

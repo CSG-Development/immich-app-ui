@@ -1,12 +1,12 @@
 <script lang="ts">
   import { DatePicker } from 'bits-ui';
   import { mdiCalendarRangeOutline, mdiChevronLeft, mdiChevronRight } from '@mdi/js';
-  import Icon from '$lib/components/Icon/Icon.svelte';
+  import Icon from '../Icon/Icon.svelte';
   import type { InputProps } from '../../types.js';
   import { getLocalTimeZone, today, type DateValue } from '@internationalized/date';
-  import Button from '$lib/internal/Button.svelte';
-  import { theme } from '$lib/services/theme.svelte.js';
-  import { Theme } from '$lib/types.js';
+  import Button from '../../internal/Button.svelte';
+  import { theme } from '../../services/theme.svelte.js';
+  import { Theme } from '../../types.js';
 
   type Props = {
     label?: string;

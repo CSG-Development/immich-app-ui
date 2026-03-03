@@ -22,5 +22,6 @@ export declare const styleVariants: {
         medium: string;
         large: string;
         giant: string;
+        standard: string;
     };
 };

@@ -56,6 +56,7 @@
         medium: 'px-5 py-2',
         large: 'px-8 py-2.5',
         giant: 'px-10 py-3',
+        standard: 'px-3 py-[13px]',
       },
       textSize: styleVariants.textSize,
       iconSize: {
@@ -64,6 +65,7 @@
         medium: 'h-10 w-10',
         large: 'h-12 w-12',
         giant: 'h-14 w-14',
+        standard: 'h-10 w-10',
       },
       roundedSize: {
         tiny: 'rounded-lg',
@@ -71,6 +73,7 @@
         medium: 'rounded-xl',
         large: 'rounded-xl',
         giant: 'rounded-2xl',
+        standard: 'rounded-3xl',
       },
       filledColor: {
         primary: 'bg-primary text-light hover:bg-primary/80',
@@ -105,6 +108,7 @@
     medium: 'small',
     large: 'medium',
     giant: 'large',
+    standard: 'small',
   };
 
   const classList = $derived(
@@ -133,6 +137,7 @@
     medium: 'h-4 w-4',
     large: 'h-6 w-6',
     giant: 'h-8 w-8',
+    standard: 'h-4 w-4',
   };
 </script>
 

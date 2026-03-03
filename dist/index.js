@@ -29,6 +29,7 @@ export { default as CodeBlock } from './components/CodeBlock/CodeBlock.svelte';
 export { default as CommandPalette } from './components/CommandPalette/CommandPalette.svelte';
 export { default as ConfirmModal } from './components/ConfirmModal/ConfirmModal.svelte';
 export { default as Container } from './components/Container/Container.svelte';
+export { default as DateInput } from './components/DateInput/DateInput.svelte';
 export { default as Field } from './components/Field/Field.svelte';
 export { default as FormatBytes } from './components/FormatBytes/FormatBytes.svelte';
 export { default as Heading } from './components/Heading/Heading.svelte';
