@@ -4,7 +4,7 @@ type Props = {
     class?: string;
     color?: Color;
     variant?: Variants;
-    translations?: TranslationProps<'darkTheme'>;
+    translations?: TranslationProps<'dark_theme'>;
     onChange?: (theme: Theme) => void;
 };
 declare const ThemeSwitcher: import("svelte").Component<Props, {}, "">;

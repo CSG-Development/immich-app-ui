@@ -1,24 +1,24 @@
-import { tv } from 'tailwind-variants';
-export const styles = {
-    label: tv({
-        base: '',
-        variants: {
-            size: {
-                tiny: 'text-xs',
-                small: 'text-sm',
-                medium: 'text-base',
-                large: 'text-lg',
-                giant: 'text-xl',
-            },
-            color: {
-                muted: 'text-gray-600 dark:text-gray-400',
-                primary: 'text-primary',
-                secondary: 'text-dark',
-                success: 'text-success',
-                danger: 'text-danger',
-                warning: 'text-warning',
-                info: 'text-info',
-            },
-        },
-    }),
+const color = {
+    primary: 'text-primary',
+    secondary: 'text-dark',
+    success: 'text-success',
+    danger: 'text-danger',
+    warning: 'text-warning',
+    info: 'text-info',
+};
+export const styleVariants = {
+    color,
+    textColor: {
+        ...color,
+        muted: 'text-gray-600 dark:text-gray-400',
+    },
+    textSize: {
+        tiny: 'text-xs',
+        small: 'text-sm',
+        medium: 'text-base',
+        large: 'text-lg',
+        giant: 'text-xl',
+        standard: 'text-sm',
+        'standard-large': 'text-sm',
+    },
 };

@@ -1,12 +1,21 @@
 <script lang="ts">
-	import { styles } from '../../styles.js';
-	import type { LabelProps } from '../../types.js';
-	import { cleanClass } from '../../utils.js';
+  import { styleVariants } from '../../styles.js';
+  import type { LabelProps } from '../../types.js';
+  import { cleanClass } from '../../utilities/internal.js';
+  import { tv } from 'tailwind-variants';
 
-	const { label, size, color, class: className, children, ...restProps }: LabelProps = $props();
+  const { label, size, color, class: className, children, ...restProps }: LabelProps = $props();
+
+  const styles = tv({
+    base: '',
+    variants: {
+      size: styleVariants.textSize,
+      color: styleVariants.textColor,
+    },
+  });
 </script>
 
-<label class={cleanClass(styles.label({ size, color }), className)} {...restProps}>
-	{#if label}{label}{/if}
-	{@render children?.()}
+<label class={cleanClass(styles({ size, color }), className)} {...restProps}>
+  {#if label}{label}{/if}
+  {@render children?.()}
 </label>

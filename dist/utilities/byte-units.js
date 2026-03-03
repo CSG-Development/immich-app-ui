@@ -8,15 +8,7 @@ export var ByteUnit;
     ByteUnit["PiB"] = "PiB";
     ByteUnit["EiB"] = "EiB";
 })(ByteUnit || (ByteUnit = {}));
-const byteUnits = [
-    ByteUnit.B,
-    ByteUnit.KiB,
-    ByteUnit.MiB,
-    ByteUnit.GiB,
-    ByteUnit.TiB,
-    ByteUnit.PiB,
-    ByteUnit.EiB,
-];
+const byteUnits = [ByteUnit.B, ByteUnit.KiB, ByteUnit.MiB, ByteUnit.GiB, ByteUnit.TiB, ByteUnit.PiB, ByteUnit.EiB];
 /**
  * Convert bytes to best human readable unit and number of that unit.
  *
@@ -29,10 +21,7 @@ const byteUnits = [
  */
 export function getBytesWithUnit(bytes, maxPrecision = 1) {
     const magnitude = Math.floor(Math.log(bytes === 0 ? 1 : bytes) / Math.log(1024));
-    return [
-        Number.parseFloat((bytes / 1024 ** magnitude).toFixed(maxPrecision)),
-        byteUnits[magnitude],
-    ];
+    return [Number.parseFloat((bytes / 1024 ** magnitude).toFixed(maxPrecision)), byteUnits[magnitude]];
 }
 /**
  * Localized number of bytes with a unit.
