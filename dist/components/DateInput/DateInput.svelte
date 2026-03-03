@@ -3,7 +3,7 @@
   import { mdiCalendarRangeOutline, mdiChevronLeft, mdiChevronRight } from '@mdi/js';
   import Icon from '../Icon/Icon.svelte';
   import type { InputProps } from '../../types.js';
-  import { getLocalTimeZone, today, type DateValue } from '@internationalized/date';
+  import { getLocalTimeZone, parseDate, today, type DateValue } from '@internationalized/date';
   import Button from '../../internal/Button.svelte';
   import { theme } from '../../services/theme.svelte.js';
   import { Theme } from '../../types.js';
@@ -24,15 +24,17 @@
     open = newOpen;
   }
 
-  let selectedValue = $state<DateValue>(value);
-  let prevValue = $state<DateValue>(value);
+  let selectedValue = $derived<DateValue | undefined>(value ? parseDate(value) : undefined);
+
+  let prevValue = $state<DateValue | undefined>(value ? parseDate(value) : undefined);
 
   function getValue() {
     return selectedValue;
   }
 
-  function setValue(newValue: DateValue) {
-    selectedValue = newValue;
+  // update parent when picker changes
+  function setValue(newValue: DateValue | undefined) {
+    value = newValue ? newValue.toString() : undefined;
   }
 
   const getSegmentValue = (part: string, value: string) => {
@@ -48,12 +50,12 @@
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const handleClear = () => {
-    selectedValue = undefined;
+    setValue(undefined);
     setOpen(false);
   };
 
   const handleCancel = () => {
-    selectedValue = prevValue;
+    setValue(prevValue);
     setOpen(false);
   };
 
