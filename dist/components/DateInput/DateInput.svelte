@@ -12,7 +12,7 @@
     label?: string;
   };
 
-  const { label = 'Label', value = $bindable<string>() }: Props & InputProps = $props();
+  let { label = 'Label', value = $bindable<string>() }: Props & InputProps = $props();
 
   let open = $state(false);
 
@@ -61,6 +61,14 @@
     prevValue = selectedValue;
     setOpen(false);
   };
+
+  $effect(() => {
+    if (selectedValue) {
+      value = selectedValue.toString();
+    } else {
+      value = '';
+    }
+  });
 </script>
 
 <DatePicker.Root
@@ -160,7 +168,9 @@
                   <DatePicker.GridRow class="flex w-full">
                     {#each weekdays as day, index (day + index)}
                       <DatePicker.HeadCell class="flex h-12 w-full items-center justify-center rounded-md font-normal!">
-                        <div class="flex size-10 items-center justify-center">{day.slice(0, 2)}</div>
+                        <div class="flex size-10 items-center justify-center">
+                          {day.slice(0, 2)}
+                        </div>
                       </DatePicker.HeadCell>
                     {/each}
                   </DatePicker.GridRow>
