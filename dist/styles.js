@@ -19,5 +19,6 @@ export const styleVariants = {
         large: 'text-lg',
         giant: 'text-xl',
         standard: 'text-sm',
+        'standard-large': 'text-sm',
     },
 };

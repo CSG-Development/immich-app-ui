@@ -23,5 +23,6 @@ export declare const styleVariants: {
         large: string;
         giant: string;
         standard: string;
+        'standard-large': string;
     };
 };
