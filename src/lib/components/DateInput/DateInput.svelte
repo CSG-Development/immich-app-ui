@@ -32,7 +32,6 @@
     return selectedValue;
   }
 
-  // update parent when picker changes
   function setValue(newValue: DateValue | undefined) {
     value = newValue ? newValue.toString() : undefined;
   }
@@ -141,7 +140,7 @@
                   `}
                 >
                   {#snippet children({ selectedYearItem, yearItems })}
-                    {#each yearItems as { value, label }, i (value)}
+                    {#each yearItems as { value, label }, i (value + i)}
                       <option {value} selected={selectedYearItem?.value === value} class="bg-light text-dark">
                         {label}
                       </option>

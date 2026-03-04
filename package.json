@@ -69,10 +69,13 @@
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "bits-ui": "^2.9.8",
+    "install": "^0.13.0",
     "luxon": "^3.7.2",
+    "npm": "^11.11.0",
     "simple-icons": "^15.14.0",
     "tailwind-merge": "^3.0.0",
-    "tailwind-variants": "^3.0.0"
+    "tailwind-variants": "^3.0.0",
+    "timepicker-ui": "^4.1.6"
   },
   "volta": {
     "node": "22.20.0"

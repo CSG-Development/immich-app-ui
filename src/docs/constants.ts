@@ -16,6 +16,7 @@ import {
   mdiCheckboxMultipleMarked,
   mdiCheckboxMultipleMarkedOutline,
   mdiCheckboxOutline,
+  mdiClockOutline,
   mdiCloseCircle,
   mdiCloseCircleOutline,
   mdiCodeBlockBraces,
@@ -98,6 +99,7 @@ export const componentGroups = [
       { name: 'HelperText', icon: mdiHelpBoxOutline, activeIcon: mdiHelpBox },
       { name: 'Input', icon: mdiFormTextbox },
       { name: 'DateInput', icon: mdiCalendarRangeOutline },
+      { name: 'TimeInput', icon: mdiClockOutline },
       { name: 'LoadingSpinner', icon: mdiDotsCircle },
       {
         name: 'MultiSelect',
