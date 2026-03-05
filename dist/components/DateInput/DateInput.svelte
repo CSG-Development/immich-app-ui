@@ -7,6 +7,7 @@
   import Button from '../../internal/Button.svelte';
   import { theme } from '../../services/theme.svelte.js';
   import { Theme } from '../../types.js';
+  import { onDestroy, onMount } from 'svelte';
 
   type Props = {
     label?: string;
@@ -70,6 +71,45 @@
       value = '';
     }
   });
+
+  let inputEl = $state<HTMLElement | null>(null);
+  let calendarEl = $state<HTMLElement | null>(null);
+  let top = $state(0);
+
+  function positionCalendar() {
+    if (!inputEl || !calendarEl) return;
+
+    const elemRect = inputEl.getBoundingClientRect();
+
+    const calendarHeight = calendarEl.offsetHeight;
+    const viewportHeight = document.documentElement.offsetHeight;
+
+    const spaceBelow = viewportHeight - elemRect.bottom;
+
+    if (spaceBelow < calendarHeight) {
+      top = spaceBelow - calendarHeight;
+    } else {
+      top = 0;
+    }
+  }
+
+  onMount(() => {
+    positionCalendar();
+
+    window.addEventListener('resize', positionCalendar);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('resize', positionCalendar);
+  });
+
+  $effect(() => {
+    if (inputEl && calendarEl) {
+      positionCalendar();
+    }
+  });
+
+  $effect(() => {});
 </script>
 
 <DatePicker.Root
@@ -80,9 +120,12 @@
   locale="en-GB"
   weekStartsOn={0}
 >
+  {console.log(top)}
   <div class="calendar flex w-full flex-col gap-1.5">
     <DatePicker.Label class="block pb-1 text-base select-none">{label}</DatePicker.Label>
     <DatePicker.Input
+      onclick={() => positionCalendar()}
+      bind:ref={inputEl}
       class="immich-border bg-primary/12 focus:border-primary flex h-13 w-full items-center rounded-3xl border py-2.5 pr-3 pl-4 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-100 dark:disabled:bg-gray-800 dark:disabled:text-gray-200"
     >
       {#snippet children({ segments })}
@@ -111,8 +154,15 @@
         </DatePicker.Trigger>
       {/snippet}
     </DatePicker.Input>
-    <DatePicker.Content sideOffset={6} class="z-50">
-      <DatePicker.Calendar class="shadow-popover bg-bg min-w-78 rounded-[28px] select-none md:w-123">
+    <DatePicker.Content
+      bind:ref={calendarEl}
+      side="bottom"
+      avoidCollisions={false}
+      sideOffset={top}
+      class="z-50"
+      preventScroll
+    >
+      <DatePicker.Calendar id="calendarEl" class="shadow-popover bg-bg min-w-78 rounded-[28px] select-none md:w-123">
         {#snippet children({ months, weekdays })}
           <div class="border-gray-border flex w-full flex-col gap-4 border-b px-6 pt-4 pb-3">
             <span class="font-bold">Select date</span>
