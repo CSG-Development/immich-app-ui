@@ -1,6 +1,6 @@
 import type { Color, Size } from '../../types.js';
 interface Props {
-    size?: Size;
+    size?: Size | 'standard' | 'standard-large';
     color?: Color;
     class?: string;
 }

@@ -24,7 +24,7 @@
   const { label, description, readOnly, required, invalid, disabled, ...labelProps } = $derived(getFieldContext());
 
   const iconStyles = tv({
-    base: 'flex flex-shrink-0 items-center justify-center',
+    base: 'mr-1 ml-2 flex flex-shrink-0 items-center justify-center',
     variants: {
       size: {
         tiny: 'w-6',
@@ -37,7 +37,7 @@
   });
 
   const containerStyles = tv({
-    base: 'flex w-full items-center bg-gray-200 outline-none disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400 dark:bg-gray-600 dark:disabled:bg-gray-800 dark:disabled:text-gray-200',
+    base: 'immich-border bg-primary/12 focus-within:border-primary flex w-full items-center rounded-3xl border text-sm outline-none aria-disabled:cursor-not-allowed aria-disabled:bg-gray-200 aria-disabled:text-gray-800 dark:aria-disabled:bg-gray-500 dark:aria-disabled:text-gray-200',
     variants: {
       shape: {
         rectangle: 'rounded-none',
@@ -45,21 +45,21 @@
         round: 'rounded-full',
       },
       roundedSize: {
-        tiny: 'rounded-xl',
-        small: 'rounded-xl',
-        medium: 'rounded-2xl',
-        large: 'rounded-2xl',
-        giant: 'rounded-2xl',
+        tiny: 'rounded-3xl',
+        small: 'rounded-3xl',
+        medium: 'rounded-3xl',
+        large: 'rounded-3xl',
+        giant: 'rounded-3xl',
       },
       invalid: {
-        true: 'border-danger/80 border',
+        true: 'border-danger/80!',
         false: '',
       },
     },
   });
 
   const inputStyles = tv({
-    base: 'flex-1 bg-transparent py-3 outline-none disabled:cursor-not-allowed',
+    base: 'placeholder:text-gray-placeholder flex-1 bg-transparent outline-none disabled:cursor-not-allowed',
     variants: {
       textSize: {
         tiny: 'text-xs',
@@ -75,6 +75,13 @@
       trailingPadding: {
         base: 'pr-4',
         icon: 'pr-0',
+      },
+      size: {
+        tiny: 'h-11',
+        small: 'h-12',
+        medium: 'h-13',
+        large: 'h-14',
+        giant: 'h-15',
       },
     },
   });
@@ -112,6 +119,7 @@
       }),
       className,
     )}
+    aria-disabled={disabled}
   >
     {#if leadingIcon}
       <div tabindex="-1" class={iconStyles({ size })}>
@@ -138,6 +146,7 @@
         textSize: size,
         leadingPadding: leadingIcon ? 'icon' : 'base',
         trailingPadding: trailingIcon || trailingText ? 'icon' : 'base',
+        size,
       })}
       bind:this={ref}
       bind:value

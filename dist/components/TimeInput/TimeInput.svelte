@@ -2,8 +2,8 @@
   import { TimepickerUI } from 'timepicker-ui';
   import Input from '../Input/Input.svelte';
   import 'timepicker-ui/main.css';
-  import { theme } from '$lib/services/theme.svelte.js';
-  import { Theme, type InputProps } from '$lib/types.js';
+  import { theme } from '../../services/theme.svelte.js';
+  import { Theme, type InputProps } from '../../types.js';
   import { mdiClockOutline } from '@mdi/js';
 
   let inputEl = $derived<HTMLInputElement | null>(null);
@@ -97,6 +97,7 @@
   }
 
   /* Light theme */
+
   :global(.light .tp-ui-am),
   :global(.light .tp-ui-pm) {
     background-color: var(--color-bg);
@@ -117,6 +118,7 @@
   }
 
   /* Dark theme */
+
   :global(.dark .tp-ui-am),
   :global(.dark .tp-ui-pm) {
     background-color: rgb(61 62 65);

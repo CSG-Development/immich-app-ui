@@ -41,7 +41,7 @@
     base: 'h-8 w-13 rounded-full border border-2',
     variants: {
       fillColor: {
-        default: 'border-gray-400 bg-gray-300 dark:border-gray-500 dark:bg-gray-400',
+        default: 'border-gray-switch bg-gray-switch-bg dark:bg-gray-border',
         primary: 'bg-primary dark:bg-primary border-transparent',
         secondary: 'bg-dark/50 border-transparent',
         success: 'bg-success/50 border-transparent',
@@ -60,7 +60,7 @@
         false: 'translate-x-2 rtl:-translate-x-2',
       },
       fillColor: {
-        default: 'bg-gray-400 dark:bg-gray-500',
+        default: 'bg-gray-switch',
         primary: 'bg-white',
         secondary: 'bg-dark',
         success: 'bg-success',

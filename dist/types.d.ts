@@ -6,7 +6,7 @@ export type TextColor = Color | 'muted';
 export type TextVariant = 'italic';
 export type FontWeight = 'light' | 'normal' | 'semi-bold' | 'bold' | 'extra-bold';
 export type HeadingColor = TextColor;
-export type Size = 'tiny' | 'small' | 'medium' | 'large' | 'giant' | 'standard' | 'standard-large';
+export type Size = 'tiny' | 'small' | 'medium' | 'large' | 'giant';
 export type ModalSize = Size | 'full';
 export type ContainerSize = ModalSize;
 export type HeadingSize = Size | 'title';
@@ -45,7 +45,7 @@ type ButtonOrAnchor = ({
     href: string;
 } & HTMLAnchorAttributes);
 type ButtonBase = {
-    size?: Size;
+    size?: Size | 'standard' | 'standard-large';
     variant?: Variants;
     class?: string;
     color?: Color;

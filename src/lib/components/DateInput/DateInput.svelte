@@ -12,7 +12,7 @@
     label?: string;
   };
 
-  let { label = 'Label', value = $bindable<string>() }: Props & InputProps = $props();
+  let { label = '', value = $bindable<string>() }: Props & InputProps = $props();
 
   let open = $state(false);
 
@@ -80,7 +80,7 @@
   locale="en-GB"
   weekStartsOn={0}
 >
-  <div class="flex w-full flex-col gap-1.5">
+  <div class="calendar flex w-full flex-col gap-1.5">
     <DatePicker.Label class="block pb-1 text-base select-none">{label}</DatePicker.Label>
     <DatePicker.Input
       class="immich-border bg-primary/12 focus:border-primary flex h-13 w-full items-center rounded-3xl border py-2.5 pr-3 pl-4 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-100 dark:disabled:bg-gray-800 dark:disabled:text-gray-200"
@@ -214,3 +214,9 @@
     </DatePicker.Content>
   </div>
 </DatePicker.Root>
+
+<style>
+  :global(.calendar) {
+    font-family: 'Roboto', sans-serif;
+  }
+</style>
