@@ -21,7 +21,7 @@
   const { label, description, readOnly, required, invalid, disabled, ...labelProps } = $derived(getFieldContext());
 
   const styles = tv({
-    base: 'w-full bg-gray-200 outline-none disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400 dark:bg-gray-600 dark:disabled:bg-gray-800 dark:disabled:text-gray-200',
+    base: 'immich-border focus-within:border-primary placeholder:text-gray-placeholder bg-primary/12 w-full resize-none border outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-800 dark:disabled:bg-gray-500 dark:disabled:text-gray-200',
     variants: {
       shape: {
         rectangle: 'rounded-none',
@@ -51,7 +51,7 @@
         giant: 'text-xl',
       },
       invalid: {
-        true: 'border-danger/80 border',
+        true: 'border-danger/80!',
         false: '',
       },
     },

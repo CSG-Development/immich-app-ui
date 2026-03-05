@@ -105,7 +105,7 @@
     },
   });
 
-  const spinnerSizes: Record<Size, Size> = {
+  const spinnerSizes: Record<Size | 'standard' | 'standard-large', Size | 'standard' | 'standard-large'> = {
     tiny: 'tiny',
     small: 'tiny',
     medium: 'small',

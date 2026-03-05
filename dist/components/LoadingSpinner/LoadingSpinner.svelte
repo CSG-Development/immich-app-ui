@@ -4,7 +4,7 @@
   import { tv } from 'tailwind-variants';
 
   interface Props {
-    size?: Size;
+    size?: Size | 'standard' | 'standard-large';
     color?: Color;
     class?: string;
   }
@@ -20,6 +20,8 @@
         medium: 'h-5',
         large: 'h-6',
         giant: 'h-12',
+        standard: 'h-5',
+        'standard-large': 'h-5',
       },
       color: {
         primary: 'fill-primary',

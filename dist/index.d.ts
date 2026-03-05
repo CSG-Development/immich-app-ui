@@ -59,6 +59,7 @@ export { default as Switch } from './components/Switch/Switch.svelte';
 export { default as Text } from './components/Text/Text.svelte';
 export { default as Textarea } from './components/Textarea/Textarea.svelte';
 export { default as ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher.svelte';
+export { default as TimeInput } from './components/TimeInput/TimeInput.svelte';
 export { default as Tooltip } from './components/Tooltip/Tooltip.svelte';
 export * from './services/command-palette-manager.svelte.js';
 export * from './services/modal-manager.svelte.js';

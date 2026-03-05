@@ -28,7 +28,7 @@
   let values = $state([themes[0], themes[1]]);
 </script>
 
-<Stack class="mb-8 max-w-[250px]" gap={8}>
+<Stack class="mb-8" gap={8}>
   <Field label="Framework">
     <MultiSelect data={['Svelte', 'React', 'Angular']} />
   </Field>
@@ -51,7 +51,7 @@
     <MultiSelect bind:values data={themes} />
   </Field>
 </Stack>
-<div class="w-full">
-  <Text>Theme:</Text>
-  <!-- <CodeBlock language={json} code={JSON.stringify(values, null, 2)} /> -->
-</div>
+<!-- <div class="w-full"> -->
+<!-- <Text>Theme:</Text> -->
+<!-- <CodeBlock language={json} code={JSON.stringify(values, null, 2)} /> -->
+<!-- </div> -->
