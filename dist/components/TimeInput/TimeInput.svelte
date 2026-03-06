@@ -8,13 +8,18 @@
 
   let inputEl = $derived<HTMLInputElement | null>(null);
 
-  let { value = $bindable<string>() }: InputProps = $props();
+  let { value = $bindable<string>('03:52 PM') }: InputProps = $props();
 
   $effect(() => {
     let picker: TimepickerUI;
     if (inputEl) {
       picker = new TimepickerUI(inputEl, {
         ui: { cssClass: theme.value === Theme.Dark ? 'custom-picker-dark' : 'custom-picker' },
+        callbacks: {
+          onConfirm: (data) => {
+            value = `${data.hour}:${data.minutes} ${data.type}`;
+          },
+        },
       });
       picker.create();
     }
@@ -24,6 +29,7 @@
 </script>
 
 <Input bind:ref={inputEl} bind:value leadingIcon={mdiClockOutline} placeholder="Select time" />
+{console.log(value)}
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
