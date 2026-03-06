@@ -120,7 +120,6 @@
   locale="en-GB"
   weekStartsOn={0}
 >
-  {console.log(top)}
   <div class="calendar flex w-full flex-col gap-1.5">
     <DatePicker.Label class="block pb-1 text-base select-none">{label}</DatePicker.Label>
     <DatePicker.Input
