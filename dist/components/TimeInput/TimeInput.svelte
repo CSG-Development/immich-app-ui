@@ -15,11 +15,6 @@
     if (inputEl) {
       picker = new TimepickerUI(inputEl, {
         ui: { cssClass: theme.value === Theme.Dark ? 'custom-picker-dark' : 'custom-picker' },
-        callbacks: {
-          onConfirm: (data) => {
-            value = data;
-          },
-        },
       });
       picker.create();
     }
@@ -28,7 +23,7 @@
   });
 </script>
 
-<Input bind:ref={inputEl} leadingIcon={mdiClockOutline} placeholder="Select time" />
+<Input bind:ref={inputEl} bind:value leadingIcon={mdiClockOutline} placeholder="Select time" />
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
