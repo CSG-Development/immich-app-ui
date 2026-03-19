@@ -12,6 +12,7 @@ type Props = {
     children: Snippet;
     onClose?: () => void;
     onEscapeKeydown?: (event: KeyboardEvent) => void;
+    mdFullSize?: boolean;
 };
 declare const Modal: import("svelte").Component<Props, {}, "">;
 type Modal = ReturnType<typeof Modal>;

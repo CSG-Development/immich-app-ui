@@ -27,6 +27,7 @@
     children: Snippet;
     onClose?: () => void;
     onEscapeKeydown?: (event: KeyboardEvent) => void;
+    mdFullSize?: boolean;
   };
 
   let {
@@ -39,19 +40,20 @@
     bodyClass: bodyClassName,
     closeOnEsc = true,
     closeOnBackdropClick = false,
+    mdFullSize = true,
     children,
   }: Props = $props();
 
   const modalStyles = tv({
-    base: `bg-light dark:bg-subtle border-subtle shadow-primary/20 flex rounded-none border shadow-sm sm:rounded-2xl dark:border-white/10`,
+    base: `bg-light dark:bg-subtle border-subtle shadow-primary/20 flex ${mdFullSize ? 'rounded-none' : 'rounded-2xl'} border shadow-sm sm:rounded-2xl dark:border-white/10 ${mdFullSize ? '' : 'max-md:m-3'}`,
     variants: {
       size: {
-        tiny: 'h-full sm:h-min md:max-w-sm',
-        small: 'h-full sm:h-min md:max-w-md',
-        medium: 'h-full sm:h-min md:max-w-(--breakpoint-sm)',
-        large: 'h-full sm:h-min md:max-w-(--breakpoint-md)',
-        giant: 'h-full sm:h-min md:max-w-(--breakpoint-lg)',
-        full: 'h-full w-full',
+        tiny: mdFullSize ? 'h-full sm:h-min md:max-w-sm' : '',
+        small: mdFullSize ? 'h-full sm:h-min md:max-w-md' : '',
+        medium: mdFullSize ? 'h-full sm:h-min md:max-w-(--breakpoint-sm)' : '',
+        large: mdFullSize ? 'h-full sm:h-min md:max-w-(--breakpoint-md)' : '',
+        giant: mdFullSize ? 'h-full sm:h-min md:max-w-(--breakpoint-lg)' : '',
+        full: mdFullSize ? 'h-full w-full' : '',
       },
     },
   });
@@ -99,7 +101,7 @@
       class={cleanClass(modalContentStyles({ size }))}
     >
       <div class={cleanClass('flex grow flex-col justify-center')}>
-        <Card bind:ref={cardRef} class={cleanClass(modalStyles({ size }), className)}>
+        <Card bind:ref={cardRef} class={cleanClass(modalStyles({ size }), className)} {mdFullSize}>
           <CardHeader class="border-b border-gray-200 px-5 py-3 dark:border-white/10">
             {#if headerChildren}
               {@render headerChildren.snippet()}
