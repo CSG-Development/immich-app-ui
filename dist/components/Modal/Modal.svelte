@@ -112,7 +112,7 @@
                 {:else if icon}
                   <Logo variant="icon" size="tiny" />
                 {/if}
-                <CardTitle tag="p" class="text-dark/90 grow text-lg font-semibold">{title}</CardTitle>
+                <CardTitle tag="p" class="text-dark/90 grow text-xl font-normal">{title}</CardTitle>
                 <CloseButton class="-me-2" onclick={() => handleClose()} />
               </div>
             {/if}
