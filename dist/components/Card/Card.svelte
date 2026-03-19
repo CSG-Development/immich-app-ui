@@ -17,6 +17,7 @@
     shape?: 'round' | 'rectangle';
     expanded?: boolean;
     expandable?: boolean;
+    mdFullSize?: boolean;
     children: Snippet;
   };
 
@@ -27,12 +28,13 @@
     shape = 'round',
     expanded = $bindable(true),
     expandable = false,
+    mdFullSize = true,
     children,
     ...restProps
   }: Props = $props();
 
   const containerStyles = tv({
-    base: 'flex w-full overflow-hidden shadow-sm',
+    base: `flex ${mdFullSize ? 'w-full' : ''} overflow-hidden shadow-sm`,
     variants: {
       shape: {
         rectangle: '',

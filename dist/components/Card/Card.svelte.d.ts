@@ -7,6 +7,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
     shape?: 'round' | 'rectangle';
     expanded?: boolean;
     expandable?: boolean;
+    mdFullSize?: boolean;
     children: Snippet;
 };
 declare const Card: import("svelte").Component<Props, {}, "ref" | "expanded">;
