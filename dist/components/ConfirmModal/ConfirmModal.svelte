@@ -46,10 +46,25 @@
 
   <ModalFooter>
     <HStack fullWidth>
-      <Button shape="round" color="secondary" fullWidth onclick={() => onClose(false)}>
+      <Button
+        shape="round"
+        color="secondary"
+        size="standard-large"
+        class="font-normal"
+        fullWidth
+        onclick={() => onClose(false)}
+      >
         {t('cancel')}
       </Button>
-      <Button shape="round" color={confirmColor} fullWidth onclick={handleConfirm} {disabled}>
+      <Button
+        shape="round"
+        color={confirmColor}
+        size="standard-large"
+        class="font-normal"
+        fullWidth
+        onclick={handleConfirm}
+        {disabled}
+      >
         {confirmText}
       </Button>
     </HStack>
