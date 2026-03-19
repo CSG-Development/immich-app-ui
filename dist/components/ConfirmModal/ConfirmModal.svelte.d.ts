@@ -10,6 +10,7 @@ interface Props {
     size?: 'small' | 'medium';
     onClose: (confirmed: boolean) => void;
     promptSnippet?: Snippet;
+    mdFullSize?: boolean;
 }
 declare const ConfirmModal: import("svelte").Component<Props, {}, "">;
 type ConfirmModal = ReturnType<typeof ConfirmModal>;

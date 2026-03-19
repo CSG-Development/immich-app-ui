@@ -18,6 +18,7 @@
     size?: 'small' | 'medium';
     onClose: (confirmed: boolean) => void;
     promptSnippet?: Snippet;
+    mdFullSize?: boolean;
   }
 
   let {
@@ -30,6 +31,7 @@
     size = 'small',
     onClose,
     promptSnippet,
+    mdFullSize = true,
   }: Props = $props();
 
   const handleConfirm = () => {
@@ -37,7 +39,7 @@
   };
 </script>
 
-<Modal {title} onClose={() => onClose(false)} {size} {icon}>
+<Modal {title} onClose={() => onClose(false)} {size} {icon} {mdFullSize}>
   <ModalBody>
     {#if promptSnippet}{@render promptSnippet()}{:else}
       <p>{prompt}</p>
