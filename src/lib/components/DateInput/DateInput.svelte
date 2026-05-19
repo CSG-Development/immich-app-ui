@@ -17,7 +17,7 @@
 
   let open = $state(false);
 
-Date/time pickers UI issues  const getOpen = () => {
+  const getOpen = () => {
     return open;
   };
 
