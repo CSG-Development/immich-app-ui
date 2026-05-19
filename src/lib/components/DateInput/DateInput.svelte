@@ -17,25 +17,25 @@
 
   let open = $state(false);
 
-  function getOpen() {
+Date/time pickers UI issues  const getOpen = () => {
     return open;
-  }
+  };
 
-  function setOpen(newOpen: boolean) {
+  const setOpen = (newOpen: boolean) => {
     open = newOpen;
-  }
+  };
 
   let selectedValue = $derived<DateValue | undefined>(value ? parseDate(value) : undefined);
 
   let prevValue = $state<DateValue | undefined>(value ? parseDate(value) : undefined);
 
-  function getValue() {
+  const getValue = () => {
     return selectedValue;
-  }
+  };
 
-  function setValue(newValue: DateValue | undefined) {
+  const setValue = (newValue: DateValue | undefined) => {
     value = newValue ? newValue.toString() : undefined;
-  }
+  };
 
   const getSegmentValue = (part: string, value: string) => {
     if (part === 'day') {
@@ -75,14 +75,14 @@
   let inputEl = $state<HTMLElement | null>(null);
   let calendarEl = $state<HTMLElement | null>(null);
   let top = $state(0);
+  let gridElement = $state<HTMLElement | null>(null);
 
-  function positionCalendar() {
+  const positionCalendar = () => {
     if (!inputEl || !calendarEl) return;
 
     const elemRect = inputEl.getBoundingClientRect();
-
     const calendarHeight = calendarEl.offsetHeight;
-    const viewportHeight = document.documentElement.offsetHeight;
+    const viewportHeight = window.innerHeight;
 
     const spaceBelow = viewportHeight - elemRect.bottom;
 
@@ -91,11 +91,31 @@
     } else {
       top = 0;
     }
-  }
+  };
+
+  const repositionOnOpen = () => {
+    if (!open || !calendarEl) return;
+
+    // Wait for the calendar to be fully rendered and measured
+    let attempts = 0;
+    const maxAttempts = 50; // 500ms max
+
+    const checkAndPosition = () => {
+      const calendarHeight = calendarEl?.offsetHeight || 0;
+
+      // If calendar has a height > 0, it's been rendered
+      if (calendarHeight > 0) {
+        positionCalendar();
+      } else if (attempts < maxAttempts) {
+        attempts++;
+        requestAnimationFrame(checkAndPosition);
+      }
+    };
+
+    requestAnimationFrame(checkAndPosition);
+  };
 
   onMount(() => {
-    positionCalendar();
-
     window.addEventListener('resize', positionCalendar);
   });
 
@@ -104,12 +124,36 @@
   });
 
   $effect(() => {
-    if (inputEl && calendarEl) {
-      positionCalendar();
+    if (open && gridElement) {
+      // Set scroll to 0 immediately
+      gridElement.scrollTop = 0;
+
+      // Watch for any unwanted scrolls and reset them
+      const preventScroll = () => {
+        if (gridElement && gridElement.scrollTop !== 0) {
+          gridElement.scrollTop = 0;
+        }
+      };
+
+      // Listen to scroll events and prevent them
+      gridElement.addEventListener('scroll', preventScroll);
+
+      // Also use a small delay as backup
+      const timeoutId = setTimeout(() => {
+        if (gridElement) {
+          gridElement.scrollTop = 0;
+        }
+        gridElement?.removeEventListener('scroll', preventScroll);
+      }, 50);
+
+      repositionOnOpen();
+
+      return () => {
+        clearTimeout(timeoutId);
+        gridElement?.removeEventListener('scroll', preventScroll);
+      };
     }
   });
-
-  $effect(() => {});
 </script>
 
 <DatePicker.Root
@@ -211,7 +255,11 @@
               </DatePicker.NextButton>
             </div>
           </DatePicker.Header>
-          <div class="flex flex-col space-y-4 px-3 py-0 sm:flex-row sm:space-y-0 sm:space-x-4">
+          <div
+            bind:this={gridElement}
+            id="calendar-grid"
+            class="flex max-h-[40vh] flex-col space-y-4 overflow-y-auto px-3 py-0 sm:flex-row sm:space-y-0 sm:space-x-4"
+          >
             {#each months as month (month.value)}
               <DatePicker.Grid class="w-full border-collapse space-y-1 select-none">
                 <DatePicker.GridHead>
@@ -264,8 +312,22 @@
   </div>
 </DatePicker.Root>
 
+{#if open}
+  <div
+    class="fixed inset-0 z-40 bg-black/50 md:hidden"
+    role="button"
+    tabindex="0"
+    onclick={() => setOpen(false)}
+    onkeydown={(e) => e.key === 'Escape' && setOpen(false)}
+  ></div>
+{/if}
+
 <style>
   :global(.calendar) {
     font-family: 'Roboto', sans-serif;
+  }
+
+  #calendar-grid {
+    scroll-behavior: auto;
   }
 </style>
