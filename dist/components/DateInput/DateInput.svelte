@@ -75,6 +75,7 @@
   let inputEl = $state<HTMLElement | null>(null);
   let calendarEl = $state<HTMLElement | null>(null);
   let top = $state(0);
+  let alignOffset = $state(0);
   let gridElement = $state<HTMLElement | null>(null);
 
   const positionCalendar = () => {
@@ -82,7 +83,9 @@
 
     const elemRect = inputEl.getBoundingClientRect();
     const calendarHeight = calendarEl.offsetHeight;
+    const calendarWidth = calendarEl.offsetWidth;
     const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
     const spaceBelow = viewportHeight - elemRect.bottom;
 
@@ -90,6 +93,19 @@
       top = spaceBelow - calendarHeight;
     } else {
       top = 0;
+    }
+
+    const centeredLeft = elemRect.left + elemRect.width / 2 - calendarWidth / 2;
+    const viewportPadding = 10;
+    const minLeft = viewportPadding;
+    const maxLeft = viewportWidth - calendarWidth - viewportPadding;
+
+    if (centeredLeft < minLeft) {
+      alignOffset = minLeft - centeredLeft;
+    } else if (centeredLeft > maxLeft) {
+      alignOffset = maxLeft - centeredLeft;
+    } else {
+      alignOffset = 0;
     }
   };
 
@@ -101,10 +117,12 @@
     const maxAttempts = 50; // 500ms max
 
     const checkAndPosition = () => {
-      const calendarHeight = calendarEl?.offsetHeight || 0;
+      const calendarRect = calendarEl?.getBoundingClientRect();
+      const calendarHeight = calendarRect?.height || 0;
+      const calendarWidth = calendarRect?.width || 0;
 
-      // If calendar has a height > 0, it's been rendered
-      if (calendarHeight > 0) {
+      // If calendar has a width/height > 0, it's been rendered
+      if (calendarHeight > 0 && calendarWidth > 0) {
         positionCalendar();
       } else if (attempts < maxAttempts) {
         attempts++;
@@ -124,9 +142,11 @@
   });
 
   $effect(() => {
-    if (open && gridElement) {
-      // Set scroll to 0 immediately
-      gridElement.scrollTop = 0;
+    if (open && calendarEl) {
+      // Set scroll to 0 immediately when the calendar opens
+      if (gridElement) {
+        gridElement.scrollTop = 0;
+      }
 
       // Watch for any unwanted scrolls and reset them
       const preventScroll = () => {
@@ -135,18 +155,19 @@
         }
       };
 
-      // Listen to scroll events and prevent them
-      gridElement.addEventListener('scroll', preventScroll);
+      if (gridElement) {
+        gridElement.addEventListener('scroll', preventScroll);
+      }
 
-      // Also use a small delay as backup
+      // Ensure we recalculate horizontal placement after render
+      repositionOnOpen();
+
       const timeoutId = setTimeout(() => {
         if (gridElement) {
           gridElement.scrollTop = 0;
         }
         gridElement?.removeEventListener('scroll', preventScroll);
       }, 50);
-
-      repositionOnOpen();
 
       return () => {
         clearTimeout(timeoutId);
@@ -200,12 +221,19 @@
     <DatePicker.Content
       bind:ref={calendarEl}
       side="bottom"
-      avoidCollisions={false}
+      align="center"
+      avoidCollisions={true}
+      collisionPadding={10}
       sideOffset={top}
+      alignOffset={alignOffset}
       class="z-50"
       preventScroll
     >
-      <DatePicker.Calendar id="calendarEl" class="shadow-popover bg-bg min-w-78 rounded-[28px] select-none md:w-123">
+      <DatePicker.Calendar
+        id="calendarEl"
+        class="shadow-popover bg-bg min-w-78 rounded-[28px] select-none md:w-123"
+        style="max-width: calc(100vw - 20px);"
+      >
         {#snippet children({ months, weekdays })}
           <div class="border-gray-border flex w-full flex-col gap-4 border-b px-6 pt-4 pb-3">
             <span class="font-bold">Select date</span>
