@@ -1,5 +1,6 @@
-import type { Color, IconLike, TextColor } from '$lib/types.js';
+import type { ActionItem, Color, IconLike, MaybeArray, TextColor } from '$lib/types.js';
 import { twMerge } from 'tailwind-merge';
+import { asText } from './common.js';
 
 export const cleanClass = (...classNames: unknown[]) => {
   return twMerge(
@@ -45,3 +46,9 @@ export const resolveIcon = ({
 
   return icons[color] ?? fallback;
 };
+
+export const asArray = <T>(items?: MaybeArray<T>) => (Array.isArray(items) ? items : items ? [items] : []);
+
+const normalize = <T = unknown>(items: T | T[] | undefined) => (items ? asArray(items) : []);
+export const getSearchString = ({ title, description, tags, extraText }: ActionItem) =>
+  asText(title, description, ...normalize(tags), ...normalize(extraText));

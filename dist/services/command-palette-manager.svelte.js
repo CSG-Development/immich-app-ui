@@ -1,92 +1,160 @@
-import { goto } from '$app/navigation';
-export const asText = (...items) => {
-    return items
-        .filter((item) => item !== undefined && item !== null)
-        .map((items) => String(items))
-        .join('|')
-        .toLowerCase();
-};
-const isEqual = (a, b) => {
-    return a.title === b.title && a.type === b.type;
-};
-const isMatch = (item, query) => {
-    if (!query) {
-        return true;
-    }
-    return item.text.includes(query);
-};
+import { matchesShortcut, shortcuts, shouldIgnoreEvent } from '../actions/shortcut.js';
+import CommandPaletteModal from '../internal/CommandPaletteModal.svelte';
+import { modalManager } from './modal-manager.svelte.js';
+import { isModalOpen } from '../state/modal-state.svelte.js';
+import { isEnabled } from '../utilities/common.js';
+import { asArray, generateId, getSearchString } from '../utilities/internal.js';
+import { on } from 'svelte/events';
+export const defaultProvider = ({ name, types, actions }) => ({
+    name,
+    types,
+    onSearch: (query) => query ? actions.filter((action) => getSearchString(action).includes(query.toLowerCase())) : actions,
+});
+const TYPE_REGEX = /type:("(?<quoted>[^"]+)"|(?<plain>\S+))/g;
 class CommandPaletteManager {
-    isEnabled = $state(false);
-    isOpen = $state(false);
-    query = $state('');
-    selectedIndex = $state(0);
-    normalizedQuery = $derived(this.query.toLowerCase());
-    items = [];
-    filteredItems = $derived(this.items.filter((item) => isMatch(item, this.normalizedQuery)).slice(0, 100));
-    recentItems = $state([]);
-    results = $derived(this.query ? this.filteredItems : this.recentItems);
+    #translations = {};
+    #providers = [];
+    #isEnabled = false;
+    #isOpen = false;
+    #results = $state([]);
+    #selectedGroupIndex = $state(0);
+    #selectedItemIndex = $state(0);
+    get isEnabled() {
+        return this.#isEnabled;
+    }
+    get results() {
+        return this.#results;
+    }
+    get selectedItem() {
+        const group = this.#results[this.#selectedGroupIndex];
+        return group?.items[this.#selectedItemIndex];
+    }
+    isSelected(item) {
+        return this.selectedItem?.id === item.id;
+    }
     enable() {
-        this.isEnabled = true;
-    }
-    async open() {
-        if (!this.isEnabled || this.isOpen) {
+        if (this.#isEnabled) {
             return;
         }
-        this.selectedIndex = 0;
-        this.isOpen = true;
-    }
-    close() {
-        if (!this.isEnabled || !this.isOpen) {
-            return;
+        this.#isEnabled = true;
+        if (globalThis.window && document.body) {
+            shortcuts(document.body, [
+                { shortcut: { key: 'k', meta: true }, onShortcut: () => this.open() },
+                { shortcut: { key: 'k', ctrl: true }, onShortcut: () => this.open() },
+                { shortcut: { key: '/' }, preventDefault: true, onShortcut: () => this.open() },
+            ]);
+            on(document.body, 'keydown', (event) => this.#handleKeydown(event));
         }
-        this.query = '';
-        this.isOpen = false;
     }
-    async select(selectedIndex) {
-        const selected = this.results[selectedIndex ?? this.selectedIndex];
-        if (!selected) {
-            return;
-        }
-        // no duplicates
-        this.recentItems = this.recentItems.filter((item) => !isEqual(item, selected));
-        this.recentItems.unshift(selected);
-        this.recentItems = this.recentItems.slice(0, 5);
-        if ('href' in selected) {
-            if (!selected.href.startsWith('/')) {
-                window.open(selected.href, '_blank');
-            }
-            else {
-                await goto(selected.href);
+    setTranslations(translations = {}) {
+        this.#translations = translations;
+    }
+    async #onSearch(query) {
+        let type;
+        if (query) {
+            for (const matches of query.matchAll(TYPE_REGEX)) {
+                query = query.replaceAll(TYPE_REGEX, '');
+                type = matches.groups?.quoted ?? matches.groups?.plain;
+                break;
             }
         }
-        else {
-            await selected.action();
+        const newResults = await Promise.all(this.#providers
+            .filter(({ types }) => !type || (types && types.includes(type)))
+            .map(async (provider) => {
+            const items = await provider.onSearch(query);
+            return {
+                provider,
+                items: items.filter((item) => isEnabled(item)).map((item) => ({ ...item, id: generateId() })),
+            };
+        }));
+        this.#selectedGroupIndex = 0;
+        this.#selectedItemIndex = 0;
+        this.#results = newResults.filter((result) => result.items.length > 0);
+    }
+    queryUpdate(query) {
+        if (!query) {
+            this.#results = [];
+            return;
         }
-        this.close();
+        void this.#onSearch(query);
     }
-    remove(index) {
-        this.recentItems.splice(index, 1);
-    }
-    up() {
-        this.selectedIndex = (this.selectedIndex - 1 + this.results.length) % this.results.length;
-    }
-    down() {
-        this.selectedIndex = (this.selectedIndex + 1) % this.results.length;
-    }
-    reset() {
-        this.items = [];
-        this.isOpen = false;
-        this.query = '';
-    }
-    addCommands(itemOrItems) {
-        const items = Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems];
-        this.items.push(...items);
-    }
-    removeCommands(itemOrItems) {
-        const items = Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems];
-        for (const remoteItem of items) {
-            this.items = this.items.filter((item) => !isEqual(item, remoteItem));
+    async #handleKeydown(event) {
+        if (event.defaultPrevented || isModalOpen()) {
+            return;
         }
+        const actions = await Promise.all(this.#providers.map((provider) => Promise.resolve(provider.onSearch())));
+        for (const action of actions.flat()) {
+            if (!asArray(action.shortcuts).some((shortcut) => matchesShortcut(event, shortcut))) {
+                continue;
+            }
+            if (!isEnabled(action)) {
+                continue;
+            }
+            const { ignoreInputFields = true, preventDefault = true } = action.shortcutOptions || {};
+            if (ignoreInputFields && shouldIgnoreEvent(event)) {
+                continue;
+            }
+            if (preventDefault) {
+                event.preventDefault();
+            }
+            action?.onAction(action);
+            return;
+        }
+    }
+    async #onClose(action) {
+        await action?.onAction(action);
+        this.#isOpen = false;
+        this.#results = [];
+    }
+    open(initialQuery) {
+        if (this.#isOpen) {
+            return;
+        }
+        const { onClose } = modalManager.open(CommandPaletteModal, {
+            translations: this.#translations,
+            initialQuery,
+        });
+        this.#isOpen = true;
+        void onClose.then((action) => this.#onClose(action));
+    }
+    navigateUp() {
+        const groups = this.#results;
+        if (groups.length === 0) {
+            return;
+        }
+        this.#selectedItemIndex--;
+        if (this.#selectedItemIndex < 0) {
+            this.#selectedGroupIndex--; // previous group
+            if (this.#selectedGroupIndex < 0) {
+                this.#selectedGroupIndex = groups.length - 1; // first group
+            }
+            this.#selectedItemIndex = groups[this.#selectedGroupIndex].items.length - 1;
+        }
+    }
+    navigateDown() {
+        const groups = this.#results;
+        if (groups.length === 0) {
+            return;
+        }
+        const group = groups[this.#selectedGroupIndex];
+        this.#selectedItemIndex++;
+        if (this.#selectedItemIndex >= group.items.length) {
+            this.#selectedItemIndex = 0;
+            this.#selectedGroupIndex++; // next group
+            if (this.#selectedGroupIndex >= groups.length) {
+                this.#selectedGroupIndex = 0; // first group
+            }
+        }
+    }
+    loadAllItems() {
+        void this.#onSearch();
+    }
+    addProvider(provider) {
+        this.#providers.push(provider);
+        return () => this.#removeProvider(provider);
+    }
+    #removeProvider(provider) {
+        this.#providers = this.#providers.filter((actionProvider) => actionProvider !== provider);
     }
 }
 export const commandPaletteManager = new CommandPaletteManager();

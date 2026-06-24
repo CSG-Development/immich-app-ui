@@ -8,4 +8,7 @@
   <Field disabled>
     <Switch />
   </Field>
+  <Field label="Required" required="indicator">
+    <Switch />
+  </Field>
 </Stack>

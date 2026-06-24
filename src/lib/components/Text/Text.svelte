@@ -1,5 +1,6 @@
 <script lang="ts">
   import Text from '$lib/internal/Text.svelte';
+  import { styleVariants } from '$lib/styles.js';
   import type { FontWeight, Size, TextColor, TextVariant } from '$lib/types.js';
   import { cleanClass } from '$lib/utilities/internal.js';
   import type { Snippet } from 'svelte';
@@ -11,25 +12,18 @@
     color?: TextColor;
     fontWeight?: FontWeight;
     variant?: TextVariant;
+    inline?: boolean;
     class?: string;
-    children: Snippet;
+    children?: Snippet;
   } & HTMLAttributes<HTMLElement>;
 
-  const { color, size, fontWeight = 'normal', children, class: className, ...restProps }: Props = $props();
+  const { color, inline, size, fontWeight = 'normal', class: className, ...restProps }: Props = $props();
 
   const styles = tv({
     variants: {
-      size: {
-        tiny: 'text-xs',
-        small: 'text-sm',
-        medium: 'text-base',
-        large: 'text-lg',
-        giant: 'text-xl',
-      },
+      size: styleVariants.textSize,
     },
   });
 </script>
 
-<Text tag="p" {color} {fontWeight} class={cleanClass(styles({ size }), className)} {...restProps}>
-  {@render children()}
-</Text>
+<Text tag={inline ? 'span' : 'p'} {color} {fontWeight} class={cleanClass(styles({ size }), className)} {...restProps} />

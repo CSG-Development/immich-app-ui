@@ -1,14 +1,19 @@
+import type { Shortcut } from './actions/shortcut.js';
+import type { ChildKey } from './constants.js';
 import type { Translations } from './services/translation.svelte.js';
-import type { Snippet } from 'svelte';
-import type { HTMLAnchorAttributes, HTMLButtonAttributes, HTMLInputAttributes, HTMLLabelAttributes, HTMLTextareaAttributes } from 'svelte/elements';
+import type { TimeValue } from 'bits-ui';
+import type { DateTime } from 'luxon';
+import type { Component, Snippet } from 'svelte';
+import type { HTMLAnchorAttributes, HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes, HTMLLabelAttributes, HTMLTextareaAttributes } from 'svelte/elements';
 export type Color = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 export type TextColor = Color | 'muted';
 export type TextVariant = 'italic';
-export type FontWeight = 'light' | 'normal' | 'semi-bold' | 'bold' | 'extra-bold';
+export type FontWeight = 'thin' | 'extra-light' | 'light' | 'normal' | 'medium' | 'semi-bold' | 'bold' | 'extra-bold' | 'black';
 export type HeadingColor = TextColor;
 export type Size = 'tiny' | 'small' | 'medium' | 'large' | 'giant';
 export type ModalSize = Size | 'full';
 export type ContainerSize = ModalSize;
+export type MenuSize = ModalSize;
 export type HeadingSize = Size | 'title';
 export type HeadingTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
 export type Shape = 'rectangle' | 'semi-round' | 'round';
@@ -18,14 +23,34 @@ export declare enum Theme {
     Light = "light",
     Dark = "dark"
 }
+export declare enum ThemePreference {
+    Light = "light",
+    Dark = "dark",
+    System = "system"
+}
 export type TranslationProps<T extends keyof Translations> = {
     [K in T]?: string;
 };
 export type IconLike = string | {
     path: string;
 };
+export type MaybeArray<T> = T | T[];
+export type MaybePromise<T> = T | Promise<T>;
+export type NavbarVariant = 'compact';
+export type NavbarProps = {
+    title: string;
+    href: string;
+    active?: boolean;
+    variant?: NavbarVariant;
+    isActive?: () => boolean;
+    icon?: IconLike | IconProps;
+    activeIcon?: IconLike | IconProps;
+    expanded?: boolean;
+    items?: NavbarProps[] | Snippet;
+    class?: string;
+};
 export type IconProps = {
-    icon: string;
+    icon: IconLike;
     title?: string;
     description?: string;
     size?: string;
@@ -41,31 +66,40 @@ export type IconProps = {
 };
 type ButtonOrAnchor = ({
     href?: never;
-} & HTMLButtonAttributes) | ({
+} & Omit<HTMLButtonAttributes, 'color' | 'size'>) | ({
     href: string;
-} & HTMLAnchorAttributes);
+} & Omit<HTMLAnchorAttributes, 'color' | 'size'>);
 type ButtonBase = {
     size?: Size | 'standard' | 'standard-large';
     variant?: Variants;
     class?: string;
     color?: Color;
     shape?: Shape;
+    loading?: boolean;
 };
 export type ButtonProps = ButtonBase & {
     ref?: HTMLElement | null;
     fullWidth?: boolean;
     loading?: boolean;
-    leadingIcon?: string;
-    trailingIcon?: string;
+    leadingIcon?: IconLike;
+    trailingIcon?: IconLike;
 } & ButtonOrAnchor;
 export type CloseButtonProps = {
     size?: Size;
+    color?: Color;
     variant?: Variants;
     class?: string;
     translations?: TranslationProps<'close'>;
 } & ButtonOrAnchor;
+export type ContextMenuButtonProps = ButtonBase & {
+    icon?: IconLike;
+    position?: ContextMenuPosition;
+    items: MenuItems;
+    bottomItems?: Array<ActionItem | undefined>;
+    translations?: TranslationProps<'open_menu'>;
+} & Omit<HTMLButtonAttributes, 'color' | 'size'>;
 export type IconButtonProps = ButtonBase & {
-    icon: string;
+    icon: IconLike;
     flipped?: boolean;
     flopped?: boolean;
     'aria-label': string;
@@ -79,7 +113,7 @@ type StackBaseProps = {
     fullHeight?: boolean;
 };
 export type ChildData = {
-    snippet: Snippet;
+    children?: Snippet;
     class?: string;
 };
 export type StackProps = StackBaseProps & {
@@ -93,6 +127,7 @@ export type LabelProps = {
     class?: string;
     size?: Size;
     color?: TextColor;
+    requiredIndicator?: boolean;
     children?: Snippet;
 } & HTMLLabelAttributes;
 export type FieldContext = {
@@ -100,56 +135,258 @@ export type FieldContext = {
     description?: string;
     invalid?: boolean;
     disabled?: boolean;
-    required?: boolean;
+    required?: boolean | 'indicator';
     readOnly?: boolean;
 } & LabelProps;
-type BaseInputProps = {
+export type TableSpacing = Size;
+export type TableContext = {
+    spacing?: TableSpacing;
+    size?: Size;
+    striped?: boolean;
+};
+type BaseInputProps<T> = {
     ref?: HTMLInputElement | null;
     class?: string;
-    value?: string;
     size?: Size;
+    value?: T;
     shape?: Shape;
     inputSize?: HTMLInputAttributes['size'];
-} & Omit<HTMLInputAttributes, 'size' | 'type'>;
-export type InputProps = BaseInputProps & {
-    containerRef?: HTMLElement | null;
-    type?: HTMLInputAttributes['type'];
     leadingIcon?: IconLike | Snippet;
     trailingIcon?: IconLike | Snippet;
     trailingText?: string;
+    containerRef?: HTMLElement | null;
+} & Omit<HTMLInputAttributes, 'size' | 'type' | 'value'>;
+export type InputProps = BaseInputProps<string> & {
+    type?: HTMLInputAttributes['type'];
 };
-export type PasswordInputProps = BaseInputProps & {
+export type TimeInputProps = {
     ref?: HTMLInputElement | null;
-    translations?: TranslationProps<'showPassword' | 'hidePassword'>;
+    class?: string;
+    size?: Size;
+    value?: TimeValue;
+    shape?: Shape;
+    granularity?: 'hour' | 'minute' | 'second';
+    leadingIcon?: IconLike | Snippet;
+    trailingIcon?: IconLike | Snippet;
+    containerRef?: HTMLElement | null;
+    onChange?: (value?: TimeValue) => void;
+    minValue?: TimeValue;
+    maxValue?: TimeValue;
+};
+export type NumberInputProps = BaseInputProps<number | undefined>;
+export type PasswordInputProps = BaseInputProps<string> & {
+    translations?: TranslationProps<'show_password' | 'hide_password'>;
     isVisible?: boolean;
+};
+export type PinInputProps = {
+    ref?: HTMLInputElement | null;
+    class?: string;
+    size?: Size;
+    value?: string;
+    shape?: Shape;
+    autofocus?: boolean;
+    disabled?: boolean;
+    length?: number;
+    password?: boolean;
+    onComplete?: (value: string) => void;
 };
 export type TextareaProps = {
     ref?: HTMLTextAreaElement | null;
     containerRef?: HTMLElement | null;
+    variant?: 'input' | 'ghost';
     class?: string;
     value?: string;
     size?: Size;
     shape?: Shape;
     grow?: boolean;
 } & HTMLTextareaAttributes;
-export type SelectItem = {
+export type SelectOption<T extends string = string> = {
     label?: string;
-    value: string;
+    value: T;
     disabled?: boolean;
 };
-export type SelectCommonProps<T extends SelectItem> = {
-    data: string[] | T[];
+export type SelectCommonProps<T extends string> = {
+    options: string[] | SelectOption<T>[];
     size?: Size;
     shape?: Shape;
     placeholder?: string;
     class?: string;
 };
-export type SelectProps<T extends SelectItem> = SelectCommonProps<T> & {
+export type SelectProps<T extends string> = SelectCommonProps<T> & {
     value?: T;
     onChange?: (value: T) => void;
+    onSelect?: (options: SelectOption<T>) => void;
 };
-export type MultiSelectProps<T extends SelectItem> = SelectCommonProps<T> & {
+export type MultiSelectProps<T extends string> = SelectCommonProps<T> & {
     values?: T[];
     onChange?: (values: T[]) => void;
+    onSelect?: (options: SelectOption<T>[]) => void;
 };
+export type ToastWithId = ToastItem & {
+    id: string;
+};
+type ToastCommonProps = {
+    color?: Color;
+};
+export type ToastContentProps = ToastCommonProps & {
+    title?: string | Snippet;
+    description?: string | Snippet;
+    icon?: IconLike | false;
+    onClose?: () => void;
+    children?: Snippet;
+    button?: ToastButton;
+};
+export type ToastContainerProps = ToastCommonProps & {
+    shape?: Shape;
+    size?: ContainerSize;
+} & Omit<HTMLAttributes<HTMLElement>, 'title' | 'color' | 'size'>;
+export type ToastPanelProps = {
+    items: Array<ToastWithId>;
+} & HTMLAttributes<HTMLDivElement>;
+export type ToastProps = ToastContentProps & ToastContainerProps;
+type Closable = {
+    onClose: () => void;
+};
+export type ToastCustom<T extends Closable = any> = {
+    component: Component<T>;
+    props: T;
+};
+export type ToastShow = {
+    title?: string;
+    description?: string;
+    color?: Color;
+    shape?: Shape;
+    icon?: IconLike | false;
+    size?: ContainerSize;
+    button?: ToastButton;
+};
+export type ToastOptions = {
+    id?: string;
+    timeout?: number;
+    closable?: boolean;
+};
+export type ToastItem = ToastProps | ToastCustom;
+export type ToastButton = {
+    label: string;
+    size?: Size;
+    color?: Color;
+    shape?: Shape;
+    variant?: Variants;
+    onclick: () => unknown;
+};
+export declare enum MenuItemType {
+    Divider = "divider"
+}
+export type MenuItems = Array<ActionItem | MenuItemType | undefined>;
+export type MenuProps = {
+    items: MenuItems;
+    bottomItems?: (ActionItem | undefined)[];
+    size?: MenuSize;
+} & HTMLAttributes<HTMLDivElement>;
+export type ContextMenuPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+export type ContextMenuBaseProps = MenuProps & {
+    target: HTMLElement;
+    position?: ContextMenuPosition;
+};
+export type ContextMenuProps = ContextMenuBaseProps & {
+    onClose: () => void;
+};
+export type DatePickerProps = {
+    onChange?: (date: DateTime | undefined) => void;
+    value?: DateTime | undefined;
+    minDate?: DateTime;
+    maxDate?: DateTime;
+    size?: Size;
+    shape?: Shape;
+    class?: string;
+};
+export type IfLike = {
+    $if?: () => boolean;
+};
+export type ActionItemHandler<T extends ActionItem = ActionItem> = (item: T) => unknown | Promise<unknown>;
+export type LinkItem = {
+    title: string;
+    description: string;
+    href: string;
+};
+export type ActionItemTag = {
+    value: string;
+    color?: Color;
+    shape: Shape;
+    class?: string;
+};
+export type ActionItem = {
+    title: string;
+    description?: string;
+    type?: string;
+    searchText?: string;
+    icon?: IconLike;
+    iconClass?: string;
+    color?: Color;
+    onAction: ActionItemHandler;
+    shortcuts?: MaybeArray<Shortcut>;
+    shortcutOptions?: {
+        ignoreInputFields?: boolean;
+        preventDefault?: boolean;
+    };
+} & IfLike;
+export type BreadcrumbsProps = {
+    separator?: IconLike | {
+        text: string;
+    };
+    items: BreadcrumbItem[];
+} & HTMLAttributes<HTMLElement>;
+export type BreadcrumbItem = {
+    href?: string;
+} & ({
+    title: string;
+    icon?: IconLike;
+} | {
+    title?: string;
+    icon: IconLike;
+});
+export type CarouselImageItem = {
+    title: string;
+    href: string;
+    src: string;
+    alt?: string;
+    id?: string;
+};
+export type ControlBarProps = {
+    ref?: HTMLElement | null;
+    closeIcon?: IconLike | Snippet;
+    variant?: Variants;
+    shape?: 'semi-round' | 'rectangle';
+    translations?: TranslationProps<'close'>;
+    onClose?: () => void;
+    children?: Snippet;
+    closeOnEsc?: boolean;
+    static?: boolean;
+} & HTMLAttributes<HTMLElement>;
+export type ActionBarProps = ControlBarProps & {
+    actions?: ActionItem[];
+    overflowActions?: ActionItem[];
+};
+export type ChildContext = {
+    register: (key: ChildKey, data: () => ChildData) => void;
+};
+type LinkCommon = {
+    class?: string;
+    underline?: boolean;
+} & Omit<HTMLAnchorAttributes, 'href'>;
+export type LinkProps = {
+    children?: Snippet;
+    href: string;
+} & LinkCommon;
+export type GithubLinkType = 'issue' | 'pr' | 'discussion';
+export type GithubLinkOptions = {
+    org?: string;
+    repo?: string;
+    number?: number;
+    type?: GithubLinkType;
+};
+export type GithubLinkProps = {
+    icon?: boolean;
+    size?: Size;
+} & GithubLinkOptions & LinkCommon;
 export {};

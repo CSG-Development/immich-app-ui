@@ -1,7 +1,4 @@
-import type { Snippet } from 'svelte';
-type Props = {
-    children: Snippet;
-};
-declare const ModalBody: import("svelte").Component<Props, {}, "">;
+import type { ChildData } from '../../types.js';
+declare const ModalBody: import("svelte").Component<ChildData, {}, "">;
 type ModalBody = ReturnType<typeof ModalBody>;
 export default ModalBody;

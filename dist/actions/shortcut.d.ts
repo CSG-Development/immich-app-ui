@@ -1,3 +1,4 @@
+import type { IconLike } from '../types.js';
 import type { ActionReturn } from 'svelte/action';
 export type Shortcut = {
     key: string;
@@ -22,7 +23,23 @@ export declare const shortcutLabel: (shortcut: Shortcut) => string;
  */
 export declare const shouldIgnoreEvent: (event: KeyboardEvent | ClipboardEvent) => boolean;
 export declare const matchesShortcut: (event: KeyboardEvent, shortcut: Shortcut) => boolean;
+type ShortcutItem = {
+    key: string;
+} | {
+    icon: IconLike;
+};
+type KeyboardRenderItem = {
+    key: string;
+    code: string;
+    shiftKey?: boolean;
+    altKey?: boolean;
+    metaKey?: boolean;
+    ctrlKey?: boolean;
+};
+export declare const renderKeyboardEvent: (item: KeyboardRenderItem) => ShortcutItem;
+export declare const renderShortcut: ({ alt, meta, ctrl, shift, key }: Shortcut) => ShortcutItem[];
 /** Bind a single keyboard shortcut to node. */
 export declare const shortcut: <T extends HTMLElement>(node: T, option: ShortcutOptions<T>) => ActionReturn<ShortcutOptions<T>>;
 /** Binds multiple keyboard shortcuts to node */
 export declare const shortcuts: <T extends HTMLElement>(node: T, options: ShortcutOptions<T>[]) => ActionReturn<ShortcutOptions<T>[]>;
+export {};

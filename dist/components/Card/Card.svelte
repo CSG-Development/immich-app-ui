@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { withChildrenSnippets } from '../../common/use-child.svelte.js';
+  import { setChildContext } from '../../common/context.svelte.js';
   import IconButton from '../IconButton/IconButton.svelte';
-  import Scrollable from '../Scrollable/Scrollable.svelte';
   import { ChildKey } from '../../constants.js';
+  import { t } from '../../services/translation.svelte.js';
   import type { Color } from '../../types.js';
   import { cleanClass } from '../../utilities/internal.js';
   import { mdiChevronDown } from '@mdi/js';
   import { type Snippet } from 'svelte';
+  import { cubicOut } from 'svelte/easing';
   import type { HTMLAttributes } from 'svelte/elements';
-  import { twMerge } from 'tailwind-merge';
+  import { slide } from 'svelte/transition';
   import { tv } from 'tailwind-variants';
 
   type Props = HTMLAttributes<HTMLDivElement> & {
@@ -48,15 +49,15 @@
   });
 
   const cardStyles = tv({
-    base: 'flex grow flex-col',
+    base: 'flex w-full grow flex-col',
     variants: {
       color: {
-        primary: 'bg-primary/25 dark:bg-primary/25',
-        secondary: 'text-dark bg-gray-50 dark:bg-neutral-900 dark:text-white',
-        success: 'bg-success/15 dark:bg-success/30',
-        danger: 'bg-danger/15 dark:bg-danger/50',
-        warning: 'bg-warning/25 dark:bg-warning/50',
-        info: 'bg-info/25 dark:bg-info/50',
+        primary: 'bg-primary-50 dark:bg-primary-100',
+        secondary: 'text-dark bg-light-50 dark:bg-light-100 dark:text-white',
+        success: 'bg-success-50 dark:bg-success-100',
+        danger: 'bg-danger-100',
+        warning: 'bg-warning-100',
+        info: 'bg-info-50 dark:bg-info-100',
       },
     },
   });
@@ -79,23 +80,21 @@
     expanded = !expanded;
   };
 
-  const { getChildren: getChildSnippet } = withChildrenSnippets(ChildKey.Card);
-  const headerChild = $derived(getChildSnippet(ChildKey.CardHeader));
-  const bodyChild = $derived(getChildSnippet(ChildKey.CardBody));
-  const footerChild = $derived(getChildSnippet(ChildKey.CardFooter));
+  const { getByKey } = setChildContext(ChildKey.Card);
+  const headerChild = $derived(getByKey(ChildKey.CardHeader));
+  const bodyChild = $derived(getByKey(ChildKey.CardBody));
+  const footerChild = $derived(getByKey(ChildKey.CardFooter));
 
   const headerBorder = $derived(!color);
   const headerPadding = $derived(headerBorder || !expanded);
 
   const headerContainerClasses = $derived(
-    twMerge(
-      cleanClass(
-        headerContainerStyles({
-          padding: headerPadding,
-          border: headerBorder,
-        }),
-        headerChild?.class,
-      ),
+    cleanClass(
+      headerContainerStyles({
+        padding: headerPadding,
+        border: headerBorder,
+      }),
+      headerChild?.class,
     ),
   );
 </script>
@@ -107,8 +106,8 @@
       onclick={onToggle}
       class={cleanClass('flex w-full items-center justify-between px-4', headerContainerClasses)}
     >
-      <div class="flex flex-col">
-        {@render headerChild?.snippet()}
+      <div class={cleanClass('flex flex-col', headerChild?.class)}>
+        {@render headerChild?.children?.()}
       </div>
       <div>
         <IconButton
@@ -118,13 +117,13 @@
           variant="ghost"
           shape="round"
           size="large"
-          aria-label="Expand"
+          aria-label={t('expand')}
         />
       </div>
     </button>
   {:else}
-    <div class={cleanClass('flex flex-col', headerContainerClasses)}>
-      {@render headerChild?.snippet()}
+    <div class={cleanClass('flex flex-col', headerContainerClasses, headerChild?.class)}>
+      {@render headerChild?.children?.()}
     </div>
   {/if}
 {/snippet}
@@ -136,14 +135,17 @@
     {/if}
 
     {#if bodyChild && expanded}
-      <Scrollable class={twMerge(cleanClass('p-4', bodyChild?.class))}>
-        {@render bodyChild?.snippet()}
-      </Scrollable>
+      <div
+        transition:slide={{ duration: expandable ? 200 : 0, easing: cubicOut }}
+        class={cleanClass('immich-scrollbar h-full w-full overflow-auto p-4', bodyChild?.class)}
+      >
+        {@render bodyChild?.children?.()}
+      </div>
     {/if}
 
     {#if footerChild}
-      <div class={twMerge(cleanClass('flex items-center border-t p-4', footerChild.class))}>
-        {@render footerChild.snippet()}
+      <div class={cleanClass('flex items-center border-t p-4', footerChild.class)}>
+        {@render footerChild.children?.()}
       </div>
     {/if}
 

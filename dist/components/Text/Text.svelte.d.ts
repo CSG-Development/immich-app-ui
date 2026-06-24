@@ -7,8 +7,9 @@ type Props = {
     color?: TextColor;
     fontWeight?: FontWeight;
     variant?: TextVariant;
+    inline?: boolean;
     class?: string;
-    children: Snippet;
+    children?: Snippet;
 } & HTMLAttributes<HTMLElement>;
 declare const Text: import("svelte").Component<Props, {}, "">;
 type Text = ReturnType<typeof Text>;

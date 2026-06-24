@@ -26,6 +26,7 @@ export declare const Constants: {
         Get: string;
         My: string;
         Store: string;
+        Awesome: string;
         Ui: string;
     };
     Pages: {
@@ -40,10 +41,9 @@ export declare const Constants: {
 };
 export declare const siteCommands: {
     icon: string;
-    type: string;
     iconClass: string;
     title: string;
     description: string;
-    href: string;
-    text: string;
+    onAction: () => Promise<void>;
+    searchText: string;
 }[];

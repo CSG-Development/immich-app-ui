@@ -1,11 +1,4 @@
-import type { Snippet } from 'svelte';
-import type { HTMLAnchorAttributes } from 'svelte/elements';
-type Props = {
-    class?: string;
-    children?: Snippet;
-    href: string;
-    underline?: boolean;
-} & HTMLAnchorAttributes;
-declare const Link: import("svelte").Component<Props, {}, "">;
+import type { LinkProps } from '../../types.js';
+declare const Link: import("svelte").Component<LinkProps, {}, "">;
 type Link = ReturnType<typeof Link>;
 export default Link;

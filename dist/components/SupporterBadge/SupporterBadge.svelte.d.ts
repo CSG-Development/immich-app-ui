@@ -4,6 +4,8 @@ type Props = {
     effect?: 'hover' | 'always';
     text?: string;
     size?: Size;
+    class?: string;
+    center?: boolean;
     children?: Snippet;
 };
 declare const SupporterBadge: import("svelte").Component<Props, {}, "">;

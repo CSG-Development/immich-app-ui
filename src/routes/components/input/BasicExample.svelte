@@ -1,5 +1,5 @@
 <script>
-  import { Stack, Field, Input, HelperText } from '@immich/ui';
+  import { Field, HelperText, Input, Stack } from '@immich/ui';
 </script>
 
 <Stack gap={4}>
@@ -10,6 +10,9 @@
     <Input placeholder="label" />
   </Field>
   <Field label="Disabled" disabled>
+    <Input placeholder="label" />
+  </Field>
+  <Field label="Required" required="indicator">
     <Input placeholder="label" />
   </Field>
   <Field label="Instance URL">
@@ -23,7 +26,7 @@
     <HelperText>Note: this is helper text</HelperText>
   </Field>
   <Field label="Invalid" invalid>
-    <Input placeholder="label" required />
+    <Input placeholder="label" />
     <HelperText color="danger">Must be valid</HelperText>
   </Field>
 </Stack>

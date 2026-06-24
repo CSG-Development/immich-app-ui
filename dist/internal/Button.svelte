@@ -1,13 +1,13 @@
 <script lang="ts">
   import Icon from '../components/Icon/Icon.svelte';
   import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner.svelte';
+  import Tooltip from '../components/Tooltip/Tooltip.svelte';
   import { styleVariants } from '../styles.js';
   import type { ButtonProps, Size } from '../types.js';
   import { isExternalLink, resolveUrl } from '../utilities/common.js';
   import { cleanClass } from '../utilities/internal.js';
   import { Button as ButtonPrimitive } from 'bits-ui';
   import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
-  import { twMerge } from 'tailwind-merge';
   import { tv } from 'tailwind-variants';
 
   type InternalButtonProps = ButtonProps & {
@@ -20,7 +20,7 @@
     type = 'button',
     href,
     variant = 'filled',
-    color = 'primary',
+    color,
     shape = 'semi-round',
     size = 'medium',
     loading = false,
@@ -28,6 +28,7 @@
     leadingIcon,
     trailingIcon,
     icon = false,
+    title,
     class: className = '',
     children,
     ...restProps
@@ -36,17 +37,13 @@
   const disabled = $derived((restProps as HTMLButtonAttributes).disabled || loading);
 
   const buttonVariants = tv({
-    base: 'ring-offset-background focus-visible:ring-ring flex items-center justify-center gap-1 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+    base: 'flex items-center justify-center gap-1 rounded-md text-sm font-medium outline-offset-2 transition-colors focus-visible:outline-2',
     variants: {
       disabled: {
-        true: 'disabled:pointer-events-none disabled:opacity-50 aria-disabled:opacity-50',
+        true: 'cursor-not-allowed disabled:opacity-50 aria-disabled:opacity-50',
         false: 'cursor-pointer',
       },
-      shape: {
-        rectangle: 'rounded-none',
-        'semi-round': 'rounded-xl',
-        round: 'rounded-full',
-      },
+      shape: styleVariants.shape,
       fullWidth: {
         true: 'w-full',
       },
@@ -78,29 +75,31 @@
         standard: 'rounded-3xl',
         'standard-large': 'rounded-3xl',
       },
-      filledColor: {
-        primary: 'bg-primary text-light hover:bg-primary/80',
-        secondary: 'bg-dark text-light hover:bg-dark/80',
-        success: 'bg-success text-light hover:bg-success/80',
-        danger: 'bg-danger text-light hover:bg-danger/80',
-        warning: 'bg-warning text-light hover:bg-warning/80',
-        info: 'bg-info text-light hover:bg-info/80',
+      focusOutlineColor: {
+        primary: 'outline-primary',
+        secondary: 'outline-dark',
+        success: 'outline-success',
+        danger: 'outline-danger',
+        warning: 'outline-warning',
+        info: 'outline-info',
       },
+      filledColor: styleVariants.filledColor,
+      filledColorHover: styleVariants.filledColorHover,
       outlineColor: {
-        primary: 'border-primary bg-primary/10 text-primary hover:bg-primary/20 border',
-        secondary: 'border-dark bg-dark/10 text-dark hover:bg-dark/20 border',
-        success: 'border-success bg-success/10 text-success hover:bg-success/20 border',
-        danger: 'border-danger bg-danger/10 text-danger hover:bg-danger/20 border',
-        warning: 'border-warning bg-warning/10 text-warning hover:bg-warning/20 border',
-        info: 'border-info bg-info/10 text-info hover:bg-info/20 border',
+        primary: 'border-primary bg-primary/10 text-primary not-disabled:hover:bg-primary/20 border',
+        secondary: 'border-dark bg-light-100 text-dark not-disabled:hover:bg-light-200 border',
+        success: 'border-success bg-success/10 text-success not-disabled:hover:bg-success/20 border',
+        danger: 'border-danger bg-danger/10 text-danger not-disabled:hover:bg-danger/20 border',
+        warning: 'border-warning bg-warning/10 text-warning not-disabled:hover:bg-warning/20 border',
+        info: 'border-info bg-info/10 text-info not-disabled:hover:bg-info/20 border',
       },
       ghostColor: {
-        primary: 'text-primary hover:bg-primary/10',
-        secondary: 'text-dark hover:bg-dark/10',
-        success: 'text-success hover:bg-success/10',
-        danger: 'text-danger hover:bg-danger/10',
-        warning: 'text-warning hover:bg-warning/10',
-        info: 'text-info hover:bg-info/10',
+        primary: 'text-primary not-disabled:hover:bg-primary-50',
+        secondary: 'text-dark not-disabled:hover:bg-light-100',
+        success: 'text-success not-disabled:hover:bg-success-50',
+        danger: 'text-danger not-disabled:hover:bg-danger-50',
+        warning: 'text-warning not-disabled:hover:bg-warning-50',
+        info: 'text-info not-disabled:hover:bg-info-50',
       },
     },
   });
@@ -117,21 +116,21 @@
 
   const classList = $derived(
     cleanClass(
-      twMerge(
-        buttonVariants({
-          shape,
-          fullWidth,
-          textPadding: icon ? undefined : size,
-          textSize: size,
-          iconSize: icon ? size : undefined,
-          disabled,
-          roundedSize: shape === 'semi-round' ? size : undefined,
-          filledColor: variant === 'filled' ? color : undefined,
-          outlineColor: variant === 'outline' ? color : undefined,
-          ghostColor: variant === 'ghost' ? color : undefined,
-        }),
-        className,
-      ),
+      buttonVariants({
+        shape,
+        fullWidth,
+        textPadding: icon ? undefined : size,
+        textSize: size,
+        iconSize: icon ? size : undefined,
+        disabled,
+        roundedSize: shape === 'semi-round' ? size : undefined,
+        filledColor: variant === 'filled' ? color : undefined,
+        filledColorHover: variant === 'filled' ? color : undefined,
+        outlineColor: variant === 'outline' ? color : undefined,
+        ghostColor: variant === 'ghost' ? color : undefined,
+        focusOutlineColor: color,
+      }),
+      className,
     ),
   );
 
@@ -158,43 +157,48 @@
   {/if}
 {/snippet}
 
-{#if href}
-  {@const resolved = resolveUrl(href)}
-  {@const external = isExternalLink(resolved)}
-  <a
-    bind:this={ref}
-    href={resolved}
-    class={classList}
-    aria-disabled={disabled}
-    target={external ? '_blank' : undefined}
-    rel={external ? 'noopener noreferrer' : undefined}
-    {...restProps as HTMLAnchorAttributes}
-  >
-    {#if loading}
-      <div class="flex items-center justify-center gap-2">
-        <LoadingSpinner {color} size={spinnerSizes[size]} />
+{#snippet wrapper()}
+  {#if loading}
+    <div class="flex items-center justify-center gap-2">
+      <LoadingSpinner {color} size={spinnerSizes[size]} />
+      {#if !icon}
         {@render content()}
-      </div>
+      {/if}
+    </div>
+  {:else}
+    {@render content()}
+  {/if}
+{/snippet}
+
+<Tooltip text={title}>
+  {#snippet child({ props })}
+    {#if href}
+      {@const resolved = resolveUrl(href)}
+      {@const external = isExternalLink(resolved)}
+      <a
+        bind:this={ref}
+        {...props}
+        href={resolved}
+        class={classList}
+        aria-disabled={disabled}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
+        {...restProps as HTMLAnchorAttributes}
+      >
+        {@render wrapper()}
+      </a>
     {:else}
-      {@render content()}
+      <ButtonPrimitive.Root
+        bind:ref
+        {...props}
+        class={classList}
+        type={type as HTMLButtonAttributes['type']}
+        {...restProps as HTMLButtonAttributes}
+        {disabled}
+        aria-disabled={disabled}
+      >
+        {@render wrapper()}
+      </ButtonPrimitive.Root>
     {/if}
-  </a>
-{:else}
-  <ButtonPrimitive.Root
-    bind:ref
-    class={classList}
-    type={type as HTMLButtonAttributes['type']}
-    {...restProps as HTMLButtonAttributes}
-    {disabled}
-    aria-disabled={disabled}
-  >
-    {#if loading}
-      <div class="flex items-center justify-center gap-2">
-        <LoadingSpinner {color} size={spinnerSizes[size]} />
-        {@render content()}
-      </div>
-    {:else}
-      {@render content()}
-    {/if}
-  </ButtonPrimitive.Root>
-{/if}
+  {/snippet}
+</Tooltip>

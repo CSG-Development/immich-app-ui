@@ -1,4 +1,4 @@
-import type { Color, IconLike, TextColor } from '../types.js';
+import type { ActionItem, Color, IconLike, MaybeArray, TextColor } from '../types.js';
 export declare const cleanClass: (...classNames: unknown[]) => string;
 export declare const withPrefix: (key: string) => string;
 export declare const generateId: () => string;
@@ -9,3 +9,5 @@ export declare const resolveIcon: ({ icons, color, override, fallback, }: {
     override?: IconLike | false;
     icons: Partial<Record<Color | TextColor, string>>;
 }) => IconLike | undefined;
+export declare const asArray: <T>(items?: MaybeArray<T>) => T[];
+export declare const getSearchString: ({ title, description, tags, extraText }: ActionItem) => string;
