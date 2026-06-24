@@ -1,5 +1,19 @@
+import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
+import { MenuItemType } from '../types.js';
 import { DateTime } from 'luxon';
+export const asGithubLink = (options) => {
+    if (typeof options === 'number') {
+        options = { number: options };
+    }
+    const { org = 'immich-app', repo = 'immich', number, type = 'pr' } = options ?? {};
+    const text = org === 'immich-app' && repo === 'immich'
+        ? `#${number}`
+        : org === 'immich-app' || org === repo
+            ? `${repo}/#${number}`
+            : `${org}/${repo}#${number}`;
+    return { href: `https://github.com/${org}/${repo}/${urlTypes[type]}/${number}`, text };
+};
 const getImmichApp = (host) => {
     if (!host || !host.endsWith('immich.app')) {
         return false;
@@ -8,6 +22,16 @@ const getImmichApp = (host) => {
         return 'root';
     }
     return host.split('.')[0];
+};
+export const navigateTo = async (url) => {
+    const resolvedUrl = resolveUrl(url);
+    const external = isExternalLink(resolvedUrl);
+    if (external) {
+        window.open(resolvedUrl, '_blank', 'noreferrer');
+    }
+    else {
+        await goto(resolvedUrl);
+    }
 };
 export const resolveUrl = (url, currentHostname) => {
     if (!isExternalLink(url)) {
@@ -20,6 +44,9 @@ export const resolveUrl = (url, currentHostname) => {
 };
 export const isExternalLink = (href) => {
     return !(href.startsWith('/') || href.startsWith('#'));
+};
+export const isMenuItemType = (item) => {
+    return item === MenuItemType.Divider;
 };
 export const resolveMetadata = (site, page, article) => {
     const title = page ? `${page.title} | ${site.title}` : site.title;
@@ -44,4 +71,17 @@ export const resolveMetadata = (site, page, article) => {
             }
             : undefined,
     };
+};
+export const asText = (...items) => {
+    return items
+        .filter((item) => item !== undefined && item !== null)
+        .map((items) => String(items))
+        .join('|')
+        .toLowerCase();
+};
+export const isEnabled = ({ $if }) => {
+    if (!$if) {
+        return true;
+    }
+    return !!$if();
 };

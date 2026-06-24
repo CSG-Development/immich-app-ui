@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { withChildrenSnippets } from '$lib/common/use-child.svelte.js';
+  import { setChildContext } from '$lib/common/context.svelte.js';
   import Card from '$lib/components/Card/Card.svelte';
   import CardBody from '$lib/components/Card/CardBody.svelte';
   import CardFooter from '$lib/components/Card/CardFooter.svelte';
@@ -8,11 +8,13 @@
   import CloseButton from '$lib/components/CloseButton/CloseButton.svelte';
   import Icon from '$lib/components/Icon/Icon.svelte';
   import Logo from '$lib/components/Logo/Logo.svelte';
+  import TooltipProvider from '$lib/components/Tooltip/TooltipProvider.svelte';
   import { ChildKey, zIndex } from '$lib/constants.js';
+  import { modalState } from '$lib/state/modal-state.svelte.js';
   import type { ModalSize } from '$lib/types.js';
   import { cleanClass } from '$lib/utilities/internal.js';
   import { Dialog } from 'bits-ui';
-  import { tick, type Snippet } from 'svelte';
+  import { onMount, type Snippet, tick } from 'svelte';
   import { tv } from 'tailwind-variants';
 
   type Props = {
@@ -20,13 +22,14 @@
     icon?: string | boolean;
     size?: ModalSize;
     class?: string;
-    bodyClass?: string;
     expandable?: boolean;
     closeOnEsc?: boolean;
     closeOnBackdropClick?: boolean;
+    focusOnOpen?: boolean;
     children: Snippet;
     onClose?: () => void;
     onEscapeKeydown?: (event: KeyboardEvent) => void;
+    onOpenAutoFocus?: (event: Event) => void;
     mdFullSize?: boolean;
   };
 
@@ -37,11 +40,12 @@
     icon = true,
     title,
     class: className,
-    bodyClass: bodyClassName,
     closeOnEsc = true,
     closeOnBackdropClick = false,
+    focusOnOpen = false,
     mdFullSize = true,
     children,
+    onOpenAutoFocus,
   }: Props = $props();
 
   const modalStyles = tv({
@@ -72,10 +76,10 @@
     },
   });
 
-  const { getChildren: getChildSnippet } = withChildrenSnippets(ChildKey.Modal);
-  const headerChildren = $derived(getChildSnippet(ChildKey.ModalHeader));
-  const bodyChildren = $derived(getChildSnippet(ChildKey.ModalBody));
-  const footerChildren = $derived(getChildSnippet(ChildKey.ModalFooter));
+  const { getByKey } = setChildContext(ChildKey.Modal);
+  const headerChildren = $derived(getByKey(ChildKey.ModalHeader));
+  const bodyChildren = $derived(getByKey(ChildKey.ModalBody));
+  const footerChildren = $derived(getByKey(ChildKey.ModalFooter));
 
   const handleClose = async () => {
     // wait for bits-ui to complete its event cycle
@@ -89,46 +93,77 @@
 
   const interactOutsideBehavior = $derived(closeOnBackdropClick ? 'close' : 'ignore');
   const escapeKeydownBehavior = $derived(closeOnEsc ? 'close' : 'ignore');
+
+  let layer = $state<number>();
+  const isHidden = $derived(layer !== modalState.layer);
+
+  const onOpenChangeComplete = (isOpen: boolean) => {
+    if (!isOpen && !isHidden) {
+      onClose?.();
+    }
+  };
+
+  const handleEscapeKeydown = (event: KeyboardEvent) => {
+    event.stopImmediatePropagation();
+    onEscapeKeydown?.(event);
+  };
+
+  const handleOpenAutoFocus = (event: Event) => {
+    if (onOpenAutoFocus) {
+      onOpenAutoFocus(event);
+    } else if (!focusOnOpen) {
+      event.preventDefault();
+    }
+  };
+
+  onMount(() => {
+    layer = modalState.incrementLayer();
+
+    return () => modalState.decrementLayer();
+  });
 </script>
 
-<Dialog.Root open={true} onOpenChange={(isOpen: boolean) => !isOpen && handleClose()}>
+<Dialog.Root open={!isHidden} {onOpenChangeComplete}>
   <Dialog.Portal>
     <Dialog.Overlay class="{zIndex.ModalBackdrop} fixed start-0 top-0  flex h-dvh max-h-dvh w-screen bg-black/30" />
     <Dialog.Content
-      {onEscapeKeydown}
+      onOpenAutoFocus={handleOpenAutoFocus}
+      onEscapeKeydown={handleEscapeKeydown}
       {escapeKeydownBehavior}
       {interactOutsideBehavior}
       class={cleanClass(modalContentStyles({ size }))}
     >
-      <div class={cleanClass('flex grow flex-col justify-center')}>
-        <Card bind:ref={cardRef} class={cleanClass(modalStyles({ size }), className)} {mdFullSize}>
-          <CardHeader class="border-b border-gray-200 px-5 py-3 dark:border-white/10">
-            {#if headerChildren}
-              {@render headerChildren.snippet()}
-            {:else if title}
-              <div class="flex items-center justify-between gap-2">
-                {#if typeof icon === 'string'}
-                  <Icon {icon} size="1.5rem" aria-hidden />
-                {:else if icon}
-                  <Logo variant="icon" size="tiny" />
-                {/if}
-                <CardTitle tag="p" class="text-dark/90 grow text-xl font-normal">{title}</CardTitle>
-                <CloseButton class="-me-2" onclick={() => handleClose()} />
-              </div>
+      <TooltipProvider>
+        <div class={cleanClass('flex w-full grow flex-col justify-center')}>
+          <Card bind:ref={cardRef} class={cleanClass(modalStyles({ size }), className)}>
+            <CardHeader class="border-b border-gray-200 px-5 py-3 dark:border-white/10">
+              {#if headerChildren}
+                {@render headerChildren.children?.()}
+              {:else if title}
+                <div class="flex items-center justify-between gap-2">
+                  {#if typeof icon === 'string'}
+                    <Icon {icon} size="1.5rem" aria-hidden />
+                  {:else if icon}
+                    <Logo variant="icon" size="tiny" />
+                  {/if}
+                  <CardTitle tag="p" class="text-dark/90 grow text-xl font-normal">{title}</CardTitle>
+                  <CloseButton class="-me-2" onclick={() => handleClose()} />
+                </div>
+              {/if}
+            </CardHeader>
+
+            <CardBody class={cleanClass('grow px-5', bodyChildren?.class)}>
+              {@render bodyChildren?.children?.()}
+            </CardBody>
+
+            {#if footerChildren}
+              <CardFooter class={cleanClass('border-t border-gray-200 dark:border-white/10', footerChildren.class)}>
+                {@render footerChildren.children?.()}
+              </CardFooter>
             {/if}
-          </CardHeader>
-
-          <CardBody class={cleanClass('grow px-5', bodyClassName)}>
-            {@render bodyChildren?.snippet()}
-          </CardBody>
-
-          {#if footerChildren}
-            <CardFooter class="border-t border-gray-200 dark:border-white/10">
-              {@render footerChildren.snippet()}
-            </CardFooter>
-          {/if}
-        </Card>
-      </div>
+          </Card>
+        </div>
+      </TooltipProvider>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>

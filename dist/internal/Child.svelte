@@ -1,28 +1,19 @@
 <script lang="ts">
+  import { getChildContext } from '../common/context.svelte.js';
   import { ChildKey } from '../constants.js';
   import type { ChildData } from '../types.js';
-  import { withPrefix } from '../utilities/internal.js';
-  import { getContext, type Snippet } from 'svelte';
+  import { onMount } from 'svelte';
 
-  type ContextType = {
-    register: (key: ChildKey, data: () => ChildData) => void;
-  };
   type Props = {
     for: ChildKey;
     as: ChildKey;
-    class?: string;
-    children: Snippet;
-  };
+  } & ChildData;
 
-  const { for: key, as, children, class: className }: Props = $props();
+  const { for: key, as, ...rest }: Props = $props();
 
-  const context = getContext<ContextType>(withPrefix(key));
+  const context = getChildContext(key);
+  const { register } = $derived(context());
+  const data = $derived(rest);
 
-  const data = $derived({ snippet: children, class: className });
-
-  if (context) {
-    context.register(as, () => data);
-  } else {
-    console.log('Unable to find context for key:', key);
-  }
+  onMount(() => register(as, () => data));
 </script>

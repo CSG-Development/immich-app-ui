@@ -1,4 +1,19 @@
+import type { IconLike } from '$lib/types.js';
+import {
+  mdiAppleKeyboardCommand,
+  mdiAppleKeyboardOption,
+  mdiAppleKeyboardShift,
+  mdiArrowDown,
+  mdiArrowLeft,
+  mdiArrowRight,
+  mdiArrowUp,
+  mdiKeyboardReturn,
+  mdiKeyboardTab,
+  mdiKeyboardTabReverse,
+  mdiMicrosoftWindows,
+} from '@mdi/js';
 import type { ActionReturn } from 'svelte/action';
+import { on } from 'svelte/events';
 
 export type Shortcut = {
   key: string;
@@ -58,6 +73,83 @@ export const matchesShortcut = (event: KeyboardEvent, shortcut: Shortcut) => {
   );
 };
 
+const isMacOS = globalThis.navigator && /Mac(intosh|Intel)/.test(globalThis.navigator.userAgent);
+
+type ShortcutItem = { key: string } | { icon: IconLike };
+
+type KeyboardRenderItem = {
+  key: string;
+  code: string;
+  shiftKey?: boolean;
+  altKey?: boolean;
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+};
+
+export const renderKeyboardEvent = (item: KeyboardRenderItem): ShortcutItem => {
+  switch (item.key) {
+    case 'ArrowLeft': {
+      return { icon: mdiArrowLeft };
+    }
+    case 'ArrowRight': {
+      return { icon: mdiArrowRight };
+    }
+    case 'ArrowUp': {
+      return { icon: mdiArrowUp };
+    }
+    case 'ArrowDown': {
+      return { icon: mdiArrowDown };
+    }
+    case 'Enter': {
+      return { icon: mdiKeyboardReturn };
+    }
+    case 'Shift': {
+      return { icon: mdiAppleKeyboardShift };
+    }
+    case 'Tab': {
+      return { icon: item.shiftKey ? mdiKeyboardTabReverse : mdiKeyboardTab };
+    }
+    case 'Space':
+    case ' ': {
+      return { key: 'Space' };
+    }
+  }
+
+  return { key: item.key };
+};
+
+export const renderShortcut = ({ alt, meta, ctrl, shift, key }: Shortcut): ShortcutItem[] => {
+  const results: ShortcutItem[] = [];
+  if (alt) {
+    results.push(isMacOS ? { icon: mdiAppleKeyboardOption } : { key: 'Alt' });
+  }
+
+  if (meta) {
+    results.push(isMacOS ? { icon: mdiAppleKeyboardCommand } : { key: mdiMicrosoftWindows });
+  }
+
+  if (ctrl) {
+    results.push({ key: 'Ctrl' });
+  }
+
+  if (shift) {
+    results.push({ icon: mdiAppleKeyboardShift });
+  }
+
+  const item = renderKeyboardEvent({
+    key,
+    code: key,
+    shiftKey: shift ?? false,
+    altKey: alt ?? false,
+    metaKey: meta ?? false,
+    ctrlKey: ctrl ?? false,
+  });
+
+  results.push('key' in item ? { key: key.toUpperCase() } : item);
+
+  return results;
+};
+
 /** Bind a single keyboard shortcut to node. */
 export const shortcut = <T extends HTMLElement>(
   node: T,
@@ -79,6 +171,9 @@ export const shortcuts = <T extends HTMLElement>(
   options: ShortcutOptions<T>[],
 ): ActionReturn<ShortcutOptions<T>[]> => {
   function onKeydown(event: KeyboardEvent) {
+    if (event.defaultPrevented) {
+      return;
+    }
     const ignoreShortcut = shouldIgnoreEvent(event);
     for (const { shortcut, onShortcut, ignoreInputFields = true, preventDefault = true } of options) {
       if (ignoreInputFields && ignoreShortcut) {
@@ -95,14 +190,14 @@ export const shortcuts = <T extends HTMLElement>(
     }
   }
 
-  node.addEventListener('keydown', onKeydown);
+  const off = on(node, 'keydown', onKeydown);
 
   return {
     update(newOptions) {
       options = newOptions;
     },
     destroy() {
-      node.removeEventListener('keydown', onKeydown);
+      off();
     },
   };
 };

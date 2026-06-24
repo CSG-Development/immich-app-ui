@@ -1,11 +1,32 @@
 <script lang="ts">
-	type Props = {
-		title: string;
-	};
+  import Text from '../Text/Text.svelte';
+  import type { FontWeight, NavbarVariant, Size, TextColor } from '../../types.js';
+  import { cleanClass } from '../../utilities/internal.js';
+  import { tv } from 'tailwind-variants';
 
-	let { title }: Props = $props();
+  type Props = {
+    title: string;
+    size?: Size;
+    color?: TextColor;
+    fontWeight?: FontWeight;
+    variant?: NavbarVariant;
+    inline?: boolean;
+    class?: string;
+  };
+
+  let { title, size = 'small', variant, fontWeight, color, class: className }: Props = $props();
+
+  const styles = tv({
+    base: 'ps-6 transition-all duration-200',
+    variants: {
+      variant: {
+        compact: 'py-4',
+        default: 'py-6',
+      },
+    },
+  });
 </script>
 
-<div class="text-sm transition-all duration-200 md:text-sm">
-	<p class="py-2 ps-4">{title}</p>
+<div class={cleanClass(styles({ variant: variant ?? 'default' }), className)}>
+  <Text {color} {size} {fontWeight}>{title}</Text>
 </div>

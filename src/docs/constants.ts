@@ -1,4 +1,16 @@
-import type { Theme } from '@immich/ui';
+import { goto } from '$app/navigation';
+import { asComponentHref } from '$docs/utilities.js';
+import {
+  asText,
+  MenuItemType,
+  toastManager,
+  type ActionItem,
+  type ActionItemHandler,
+  type CarouselImageItem,
+  type IconLike,
+  type MenuItems,
+  type Theme,
+} from '@immich/ui';
 import {
   mdiAccountCircle,
   mdiAccountCircleOutline,
@@ -9,47 +21,72 @@ import {
   mdiBullhornVariant,
   mdiBullhornVariantOutline,
   mdiButtonCursor,
-  mdiCalendarRangeOutline,
+  mdiButtonPointer,
+  mdiCalendar,
   mdiCard,
   mdiCardOutline,
   mdiCheckboxMarked,
   mdiCheckboxMultipleMarked,
   mdiCheckboxMultipleMarkedOutline,
   mdiCheckboxOutline,
+  mdiClock,
   mdiClockOutline,
   mdiCloseCircle,
   mdiCloseCircleOutline,
   mdiCodeBlockBraces,
   mdiCodeBraces,
+  mdiContentCopy,
   mdiDotsCircle,
+  mdiDotsVertical,
+  mdiDownload,
   mdiFormatHeaderPound,
   mdiFormDropdown,
   mdiFormTextarea,
   mdiFormTextbox,
   mdiFormTextboxPassword,
+  mdiGauge,
   mdiHelpBox,
   mdiHelpBoxOutline,
   mdiHomeCircle,
   mdiHomeCircleOutline,
   mdiImage,
   mdiImageOutline,
+  mdiInformationSlabCircle,
+  mdiInformationSlabCircleOutline,
   mdiKeyboardVariant,
+  mdiLanguageMarkdownOutline,
   mdiLink,
   mdiListBox,
   mdiListBoxOutline,
+  mdiLockSmart,
   mdiMenu,
+  mdiMessageAlert,
+  mdiMessageAlertOutline,
   mdiNumeric,
+  mdiPalette,
   mdiPanVertical,
   mdiPartyPopper,
+  mdiPencilOutline,
+  mdiProgressHelper,
+  mdiShareVariant,
+  mdiSlashForward,
   mdiSquare,
   mdiSquareOutline,
+  mdiTable,
+  mdiTag,
+  mdiTagOutline,
   mdiThemeLightDark,
   mdiToggleSwitch,
   mdiToggleSwitchOutline,
+  mdiTrashCanOutline,
+  mdiVectorSquare,
+  mdiViewCarousel,
+  mdiViewCarouselOutline,
   mdiViewSequential,
   mdiViewSequentialOutline,
   mdiWindowMaximize,
 } from '@mdi/js';
+import { siGithub } from 'simple-icons';
 import type { Component } from 'svelte';
 
 export enum DisplayOption {
@@ -72,50 +109,98 @@ export const siteMetadata = {
   description: 'A Svelte component library for Immich',
 };
 
-export const componentGroups = [
+export type ComponentItem = {
+  name: string;
+  title?: string;
+  href?: string;
+  icon: IconLike;
+  activeIcon?: string;
+  items?: ComponentItem[];
+};
+
+export type ComponentGroup = {
+  title: string;
+  components: ComponentItem[];
+};
+
+export const componentGroups: ComponentGroup[] = [
   {
     title: 'Layout',
     components: [
       { name: 'Alert', icon: mdiAlertCircleOutline, activeIcon: mdiAlertCircle },
       { name: 'AnnouncementBanner', icon: mdiBullhornVariantOutline, activeIcon: mdiBullhornVariant },
       { name: 'AppShell', icon: mdiApplicationOutline, activeIcon: mdiApplication },
+      { name: 'Breadcrumbs', icon: mdiSlashForward },
       { name: 'Card', icon: mdiCardOutline, activeIcon: mdiCard },
       { name: 'Container', icon: mdiSquareOutline, activeIcon: mdiSquare },
+      { name: 'ContextMenu', icon: mdiDotsVertical },
+      {
+        name: 'ControlBar',
+        icon: mdiApplicationOutline,
+        activeIcon: mdiApplication,
+        items: [{ name: 'ActionBar', icon: mdiCardOutline, activeIcon: mdiCard }],
+      },
+      { name: 'ImageCarousel', icon: mdiViewCarouselOutline, activeIcon: mdiViewCarousel },
+      {
+        name: 'Modal',
+        title: 'Modals',
+        icon: mdiWindowMaximize,
+        items: [
+          { name: 'BasicModal', icon: mdiWindowMaximize },
+          { name: 'ConfirmModal', icon: mdiCheckboxOutline },
+          { name: 'FormModal', icon: mdiWindowMaximize },
+        ],
+      },
       { name: 'Navbar', icon: mdiMenu },
-      { name: 'Modal', icon: mdiWindowMaximize },
-      { name: 'ConfirmModal', icon: mdiCheckboxOutline },
       { name: 'Scrollable', icon: mdiPanVertical },
       { name: 'Stack', icon: mdiViewSequentialOutline, activeIcon: mdiViewSequential },
+      { name: 'Table', icon: mdiTable },
+      { name: 'Toast', icon: mdiMessageAlertOutline, activeIcon: mdiMessageAlert },
+      { name: 'Tooltip', icon: mdiInformationSlabCircleOutline, activeIcon: mdiInformationSlabCircle },
     ],
   },
   {
     title: 'Forms',
     components: [
-      { name: 'Button', icon: mdiButtonCursor },
-      { name: 'IconButton', icon: mdiHomeCircleOutline, activeIcon: mdiHomeCircle },
+      {
+        name: 'Button',
+        title: 'Buttons',
+        icon: mdiButtonCursor,
+        items: [
+          { name: 'ActionButton', icon: mdiButtonPointer },
+          { name: 'CloseButton', icon: mdiCloseCircleOutline, activeIcon: mdiCloseCircle },
+          { name: 'IconButton', icon: mdiHomeCircleOutline, activeIcon: mdiHomeCircle },
+          { name: 'ListButton', icon: mdiButtonPointer },
+        ],
+      },
       { name: 'Checkbox', icon: mdiCheckboxOutline, activeIcon: mdiCheckboxMarked },
-      { name: 'CloseButton', icon: mdiCloseCircleOutline, activeIcon: mdiCloseCircle },
       { name: 'Field', icon: mdiListBoxOutline, activeIcon: mdiListBox },
       { name: 'HelperText', icon: mdiHelpBoxOutline, activeIcon: mdiHelpBox },
       { name: 'Input', icon: mdiFormTextbox },
-      { name: 'DateInput', icon: mdiCalendarRangeOutline },
-      { name: 'TimeInput', icon: mdiClockOutline },
+      { name: 'Meter', icon: mdiGauge },
+      { name: 'NumberInput', icon: mdiNumeric },
+      { name: 'PasswordInput', icon: mdiFormTextboxPassword },
+      { name: 'PinInput', icon: mdiLockSmart },
+      { name: 'ProgressBar', icon: mdiProgressHelper },
       { name: 'LoadingSpinner', icon: mdiDotsCircle },
       {
         name: 'MultiSelect',
         icon: mdiCheckboxMultipleMarkedOutline,
         activeIcon: mdiCheckboxMultipleMarked,
       },
-      { name: 'PasswordInput', icon: mdiFormTextboxPassword },
       { name: 'Select', icon: mdiFormDropdown },
       { name: 'Switch', icon: mdiToggleSwitchOutline, activeIcon: mdiToggleSwitch },
+      { name: 'TimeInput', icon: mdiClockOutline, activeIcon: mdiClock },
+      { name: 'DatePicker', icon: mdiCalendar },
     ],
   },
   {
     title: 'Text',
     components: [
+      { name: 'Badge', icon: mdiTagOutline, activeIcon: mdiTag },
       { name: 'Code', icon: mdiCodeBraces },
       { name: 'CodeBlock', icon: mdiCodeBlockBraces },
+      { name: 'GithubLink', icon: siGithub },
       { name: 'Kbd', icon: mdiKeyboardVariant },
       { name: 'Text', icon: mdiFormatHeaderPound },
       { name: 'Textarea', icon: mdiFormTextarea },
@@ -128,10 +213,124 @@ export const componentGroups = [
     title: 'Miscellaneous',
     components: [
       { name: 'Avatar', icon: mdiAccountCircleOutline, activeIcon: mdiAccountCircle },
-      { name: 'Logo', icon: mdiImageOutline, activeIcon: mdiImage },
       { name: 'CommandPalette', icon: mdiMenu, activeIcon: mdiMenu },
+      { name: 'Icon', icon: mdiVectorSquare },
+      { name: 'Logo', icon: mdiImageOutline, activeIcon: mdiImage },
+      { name: 'Markdown', icon: mdiLanguageMarkdownOutline, activeIcon: mdiLanguageMarkdownOutline },
       { name: 'SupporterBadge', icon: mdiPartyPopper },
       { name: 'ThemeSwitcher', icon: mdiThemeLightDark },
     ],
   },
+  {
+    title: 'Design',
+    components: [{ name: 'Colors', icon: mdiPalette }],
+  },
 ];
+
+const onAction: ActionItemHandler = (item) => {
+  toastManager.show({
+    title: `Clicked ${item.title}`,
+    color: item.color ?? 'primary',
+    icon: item.icon,
+  });
+};
+
+export const ExampleActions = {
+  Copy: { title: 'Copy', icon: mdiContentCopy, onAction },
+  Share: { title: 'Share', icon: mdiShareVariant, onAction },
+  Edit: { title: 'Edit album', icon: mdiPencilOutline, onAction },
+  Download: { title: 'Download', icon: mdiDownload, onAction },
+  Delete: { title: 'Delete', icon: mdiTrashCanOutline, color: 'danger', onAction },
+} satisfies Record<string, ActionItem>;
+
+export const exampleActions: ActionItem[] = [
+  ExampleActions.Share,
+  ExampleActions.Copy,
+  ExampleActions.Download,
+  ExampleActions.Edit,
+  ExampleActions.Delete,
+];
+
+export const exampleMenuItems: MenuItems = [
+  ExampleActions.Share,
+  ExampleActions.Copy,
+  ExampleActions.Edit,
+  ExampleActions.Download,
+  MenuItemType.Divider,
+  ExampleActions.Delete,
+];
+
+export const carouselImageItems: CarouselImageItem[] = [
+  {
+    title: '1 year ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1011/800/600',
+    alt: 'Sample image',
+  },
+  {
+    title: '2 years ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1012/800/600',
+    alt: 'Sample image',
+  },
+  {
+    title: '3 years ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1013/800/600',
+    alt: 'Sample image',
+  },
+  {
+    title: '4 years ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1015/800/600',
+    alt: 'Sample image',
+  },
+  {
+    title: '5 years ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1016/800/600',
+    alt: 'Sample image',
+  },
+  {
+    title: '6 years ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1018/800/600',
+    alt: 'Sample image',
+  },
+  {
+    title: '7 years ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1020/800/600',
+    alt: 'Sample image',
+  },
+  {
+    title: '8 years ago',
+    href: '#',
+    src: 'https://picsum.photos/id/1024/800/600',
+    alt: 'Sample image',
+  },
+];
+
+const asCommand = (group: ComponentGroup, component: ComponentItem): ActionItem => {
+  const href = asComponentHref(component.name);
+  return {
+    icon: component.icon,
+    iconClass: '',
+    title: component.name,
+    description: `View the ${component.name} component`,
+    onAction: () => goto(href),
+    searchText: asText('Component', group.title, component.name, href),
+  };
+};
+
+export const componentCommands: ActionItem[] = [];
+
+// components
+for (const group of componentGroups) {
+  for (const component of group.components) {
+    componentCommands.push(asCommand(group, component));
+    for (const item of component.items ?? []) {
+      componentCommands.push(asCommand(group, item));
+    }
+  }
+}

@@ -1,17 +1,19 @@
 <script lang="ts">
+  import futoDark from '../../assets/immich-logo-futo-dark.svg';
+  import futoLight from '../../assets/immich-logo-futo-light.svg';
   import inlineDark from '../../assets/immich-logo-inline-dark.svg';
   import inlineLight from '../../assets/immich-logo-inline-light.svg';
   import stackedDark from '../../assets/immich-logo-stacked-dark.svg';
   import stackedLight from '../../assets/immich-logo-stacked-light.svg';
   import icon from '../../assets/immich-logo.svg';
-  import { theme } from '../../services/theme.svelte.js';
+  import { themeManager } from '../../services/theme-manager.svelte.js';
   import { Theme, type Size } from '../../types.js';
   import { cleanClass } from '../../utilities/internal.js';
   import { tv } from 'tailwind-variants';
 
   type Props = {
-    size?: Size | 'landing' | 'stacked';
-    variant?: 'stacked' | 'inline' | 'logo' | 'icon';
+    size?: Size | 'landing';
+    variant?: 'stacked' | 'inline' | 'logo' | 'icon' | 'stacked-futo';
     class?: string;
   };
 
@@ -20,11 +22,15 @@
   const getUrl = (variant: Props['variant']): string => {
     switch (variant) {
       case 'stacked': {
-        return theme.value === Theme.Dark ? stackedDark : stackedLight;
+        return themeManager.value === Theme.Light ? stackedLight : stackedDark;
       }
 
       case 'inline': {
-        return theme.value === Theme.Dark ? inlineDark : inlineLight;
+        return themeManager.value === Theme.Light ? inlineLight : inlineDark;
+      }
+
+      case 'stacked-futo': {
+        return themeManager.value === Theme.Light ? futoLight : futoDark;
       }
 
       default: {
@@ -42,12 +48,12 @@
         large: 'h-16',
         giant: 'h-24',
         landing: 'h-64',
-        stacked: 'h-[180px]',
       },
 
       variant: {
         stacked: '',
-        inline: 'h-[34px]',
+        inline: '',
+        'stacked-futo': '',
         logo: 'bg-light aspect-square rounded-full shadow-lg',
         icon: 'aspect-square',
       },

@@ -1,4 +1,10 @@
+import { MenuItemType, type ActionItem, type GithubLinkProps, type IfLike } from '../types.js';
 import { DateTime } from 'luxon';
+export declare const asGithubLink: (options: number | GithubLinkProps) => {
+    href: string;
+    text: string;
+};
+export declare const navigateTo: (url: string) => Promise<void>;
 export declare const resolveUrl: (url: string, currentHostname?: string) => string;
 export declare const isExternalLink: (href: string) => boolean;
 export type Metadata = {
@@ -14,6 +20,7 @@ export type ArticleMetadata = {
     section?: string;
     tags?: string[];
 };
+export declare const isMenuItemType: (item: ActionItem | MenuItemType) => item is MenuItemType;
 export declare const resolveMetadata: (site: Metadata, page?: Metadata, article?: ArticleMetadata) => {
     type: string;
     siteName: string;
@@ -29,3 +36,5 @@ export declare const resolveMetadata: (site: Metadata, page?: Metadata, article?
         tags: string[] | undefined;
     } | undefined;
 };
+export declare const asText: (...items: unknown[]) => string;
+export declare const isEnabled: ({ $if }: IfLike) => boolean;

@@ -1,7 +1,7 @@
-import type { Snippet } from 'svelte';
+import type { ChildData } from '../../types.js';
 type Props = {
-    children: Snippet;
-};
+    border?: boolean;
+} & ChildData;
 declare const AppShellHeader: import("svelte").Component<Props, {}, "">;
 type AppShellHeader = ReturnType<typeof AppShellHeader>;
 export default AppShellHeader;

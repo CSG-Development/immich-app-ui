@@ -1,4 +1,5 @@
 import { twMerge } from 'tailwind-merge';
+import { asText } from './common.js';
 export const cleanClass = (...classNames) => {
     return twMerge(classNames
         .filter((className) => {
@@ -24,3 +25,6 @@ export const resolveIcon = ({ icons, color, override, fallback, }) => {
     }
     return icons[color] ?? fallback;
 };
+export const asArray = (items) => (Array.isArray(items) ? items : items ? [items] : []);
+const normalize = (items) => (items ? asArray(items) : []);
+export const getSearchString = ({ title, description, tags, extraText }) => asText(title, description, ...normalize(tags), ...normalize(extraText));

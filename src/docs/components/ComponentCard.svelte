@@ -1,9 +1,9 @@
 <script lang="ts">
   import { asComponentHref } from '$docs/utilities.js';
-  import { Button, Icon, VStack, Text } from '@immich/ui';
+  import { Button, Icon, Text, VStack, type IconLike } from '@immich/ui';
 
   type Props = {
-    component: { name: string; icon: string };
+    component: { name: string; icon: IconLike };
   };
 
   const { component }: Props = $props();
@@ -13,7 +13,7 @@
   href={asComponentHref(component.name)}
   variant="outline"
   color="secondary"
-  class="h-24 w-44 rounded-2xl border border-gray-300 dark:border-gray-700"
+  class="border-light-300 h-24 w-44 rounded-2xl border "
   size="large"
 >
   <VStack gap={2}>

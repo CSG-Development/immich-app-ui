@@ -1,36 +1,55 @@
-export type CommandItem = {
-    icon: string;
-    iconClass: string;
-    type: string;
-    title: string;
-    description?: string;
-    text: string;
-} & ({
-    href: string;
-} | {
-    action: () => void;
-});
-export declare const asText: (...items: unknown[]) => string;
+import type { ActionItem, MaybePromise, TranslationProps } from '../types.js';
+export type CommandPaletteTranslations = TranslationProps<'search_placeholder' | 'search_no_results' | 'command_palette_prompt_default' | 'command_palette_to_select' | 'command_palette_to_close' | 'command_palette_to_navigate' | 'command_palette_to_show_all'>;
+export type ActionProvider = {
+    name?: string;
+    types?: string[];
+    onSearch: (query?: string) => MaybePromise<ActionItem[]>;
+};
+export type ActionDefaultProviderOptions = Omit<ActionProvider, 'onSearch'> & {
+    actions: ActionItem[];
+};
+export declare const defaultProvider: ({ name, types, actions }: ActionDefaultProviderOptions) => {
+    name: string | undefined;
+    types: string[] | undefined;
+    onSearch: (query?: string) => ActionItem[];
+};
 declare class CommandPaletteManager {
-    isEnabled: boolean;
-    isOpen: boolean;
-    query: string;
-    selectedIndex: number;
-    private normalizedQuery;
-    items: CommandItem[];
-    filteredItems: CommandItem[];
-    recentItems: CommandItem[];
-    results: CommandItem[];
+    #private;
+    get isEnabled(): boolean;
+    get results(): {
+        provider: ActionProvider;
+        items: Array<ActionItem & {
+            id: string;
+        }>;
+    }[];
+    get selectedItem(): {
+        title: string;
+        description?: string;
+        type?: string;
+        searchText?: string;
+        icon?: import("../types.js").IconLike;
+        iconClass?: string;
+        color?: import("../types.js").Color;
+        onAction: import("../types.js").ActionItemHandler;
+        shortcuts?: import("../types.js").MaybeArray<import("../actions/shortcut.js").Shortcut>;
+        shortcutOptions?: {
+            ignoreInputFields?: boolean;
+            preventDefault?: boolean;
+        };
+    } & import("../types.js").IfLike & {
+        id: string;
+    };
+    isSelected(item: {
+        id: string;
+    }): boolean;
     enable(): void;
-    open(): Promise<void>;
-    close(): void;
-    select(selectedIndex?: number): Promise<void>;
-    remove(index: number): void;
-    up(): void;
-    down(): void;
-    reset(): void;
-    addCommands(itemOrItems: CommandItem | CommandItem[]): void;
-    removeCommands(itemOrItems: CommandItem | CommandItem[]): void;
+    setTranslations(translations?: CommandPaletteTranslations): void;
+    queryUpdate(query: string): void;
+    open(initialQuery?: string): void;
+    navigateUp(): void;
+    navigateDown(): void;
+    loadAllItems(): void;
+    addProvider(provider: ActionProvider): () => void;
 }
 export declare const commandPaletteManager: CommandPaletteManager;
 export {};

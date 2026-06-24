@@ -1,7 +1,7 @@
 <script lang="ts">
+  import Text from '../../internal/Text.svelte';
   import type { FontWeight, HeadingColor, HeadingSize, HeadingTag, TextVariant } from '../../types.js';
   import { cleanClass } from '../../utilities/internal.js';
-  import Text from '../../internal/Text.svelte';
   import type { Snippet } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
   import { tv } from 'tailwind-variants';
@@ -20,25 +20,18 @@
     children: Snippet;
   } & HTMLAttributes<HTMLElement>;
 
-  const {
-    tag = 'p',
-    size = 'medium',
-    fontWeight = 'semi-bold',
-    class: className,
-    children,
-    ...restProps
-  }: Props = $props();
+  const { tag = 'p', size = 'medium', fontWeight = 'bold', class: className, children, ...restProps }: Props = $props();
 
   const styles = tv({
     base: 'leading-none tracking-tight',
     variants: {
       size: {
-        tiny: 'text-lg',
-        small: 'text-xl',
-        medium: 'text-2xl',
-        large: 'text-3xl',
-        giant: 'text-4xl',
-        title: 'text-5xl',
+        tiny: 'text-sm md:text-base',
+        small: 'text-lg md:text-xl',
+        medium: 'text-xl md:text-2xl',
+        large: 'text-3xl md:text-4xl',
+        giant: 'text-4xl md:text-5xl',
+        title: 'text-5xl md:text-6xl',
       },
     },
   });

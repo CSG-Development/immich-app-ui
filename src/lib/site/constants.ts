@@ -1,4 +1,4 @@
-import { asText } from '$lib/services/command-palette-manager.svelte.js';
+import { asText, navigateTo } from '$lib/utilities/common.js';
 import { mdiOpenInNew } from '@mdi/js';
 
 export const Constants = {
@@ -30,6 +30,7 @@ export const Constants = {
     Get: 'https://get.immich.app/',
     My: 'https://my.immich.app/',
     Store: 'https://immich.store/',
+    Awesome: 'https://awesome.immich.app/',
     Ui: 'https://ui.immich.app/',
   },
   Pages: {
@@ -131,10 +132,9 @@ export const siteCommands = [
   },
 ].map((site) => ({
   icon: mdiOpenInNew,
-  type: 'Link',
   iconClass: 'text-indigo-700 dark:text-indigo-200',
   title: site.title,
   description: site.description,
-  href: site.href,
-  text: asText('Site', 'Link', site.title, site.description, site.href),
+  onAction: () => navigateTo(site.href),
+  searchText: asText('Site', 'Link', site.title, site.description, site.href),
 }));

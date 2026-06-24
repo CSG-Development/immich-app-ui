@@ -1,11 +1,9 @@
 import { ChildKey } from '../constants.js';
-import { type Snippet } from 'svelte';
+import type { ChildData } from '../types.js';
 type Props = {
     for: ChildKey;
     as: ChildKey;
-    class?: string;
-    children: Snippet;
-};
+} & ChildData;
 declare const Child: import("svelte").Component<Props, {}, "">;
 type Child = ReturnType<typeof Child>;
 export default Child;

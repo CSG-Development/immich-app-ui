@@ -225,7 +225,7 @@
       avoidCollisions={true}
       collisionPadding={10}
       sideOffset={top}
-      alignOffset={alignOffset}
+      {alignOffset}
       class="z-50"
       preventScroll
     >
