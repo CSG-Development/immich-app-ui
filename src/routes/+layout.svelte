@@ -48,7 +48,6 @@
     }
   });
 
-  themeManager.initialize();
   toastManager.setOptions({ class: 'top-[58px]' });
 
   const commands: ActionItem[] = [

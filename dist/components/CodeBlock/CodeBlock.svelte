@@ -1,7 +1,6 @@
 <script lang="ts">
   import Card from '../Card/Card.svelte';
   import IconButton from '../IconButton/IconButton.svelte';
-  /*   import { theme } from '../../services/theme.svelte.js'; */
   import { /* Theme, */ type TranslationProps } from '../../types.js';
   import { t } from '../../services/translation.svelte.js';
   import { mdiCheckCircle, mdiContentCopy } from '@mdi/js';
@@ -46,7 +45,6 @@
 
 <!-- <svelte:head> -->
 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-<!-- {@html theme.value === Theme.Dark ? darkTheme : lightTheme} -->
 <!-- </svelte:head> -->
 
 <Card class="relative">

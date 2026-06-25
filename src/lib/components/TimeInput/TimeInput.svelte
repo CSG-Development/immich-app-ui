@@ -2,9 +2,9 @@
   import { TimepickerUI } from 'timepicker-ui';
   import Input from '../Input/Input.svelte';
   import 'timepicker-ui/main.css';
-  import { theme } from '$lib/services/theme.svelte.js';
   import { Theme, type InputProps } from '$lib/types.js';
   import { mdiClockOutline } from '@mdi/js';
+  import { themeManager } from '$lib/services/theme-manager.svelte.js';
 
   let inputEl = $derived<HTMLInputElement | null>(null);
 
@@ -14,7 +14,7 @@
     let picker: TimepickerUI;
     if (inputEl) {
       picker = new TimepickerUI(inputEl, {
-        ui: { cssClass: theme.value === Theme.Dark ? 'custom-picker-dark' : 'custom-picker' },
+        ui: { cssClass: themeManager.value === Theme.Dark ? 'custom-picker-dark' : 'custom-picker' },
         callbacks: {
           onConfirm: (data) => {
             value = `${data.hour}:${data.minutes} ${data.type}`;
