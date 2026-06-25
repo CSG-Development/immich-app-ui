@@ -1,76 +1,86 @@
 import { browser } from '$app/environment';
 import { PersistedLocalStorage } from '../state/persisted.js';
-import { Theme } from '../types.js';
-const DEFAULT_OPTIONS = Object.freeze({
-    lightClass: 'light',
-    darkClass: 'dark',
-    selector: 'html',
-});
+import { Theme, ThemePreference } from '../types.js';
+import { MediaQuery } from 'svelte/reactivity';
+const LIGHT_CLASS = 'light';
+const DARK_CLASS = 'dark';
+const DARK_READER_LOCK_NAME = 'darkreader-lock';
 class ThemeManager {
-    #theme = new PersistedLocalStorage('immich-ui-theme', Theme.Dark, {
+    #darkModeUser = new MediaQuery('(prefers-color-scheme: dark)');
+    #theme = new PersistedLocalStorage('immich-ui-theme', ThemePreference.System, {
         upgrade: (value) => {
-            if (value && typeof value === 'object' && 'value' in value) {
-                value = value.value;
+            if (typeof value === 'object' && value.system) {
+                if (value.system) {
+                    return ThemePreference.System;
+                }
+                if (value.value) {
+                    value = value.value;
+                }
             }
-            if (value === 'light' || value === 'dark') {
+            if (typeof value === 'string' && Object.values(ThemePreference).includes(value)) {
                 return value;
             }
-            return Theme.Dark;
+            return ThemePreference.System;
         },
     });
-    #options = $state({ ...DEFAULT_OPTIONS });
-    get value() {
+    get prefersDark() {
+        return this.#darkModeUser.current;
+    }
+    get preference() {
         return this.#theme.current;
     }
-    initialize(options) {
-        if (options) {
-            this.setOptions(options);
+    get value() {
+        switch (this.#theme.current) {
+            case ThemePreference.System: {
+                return this.#darkModeUser.current ? Theme.Dark : Theme.Light;
+            }
+            case ThemePreference.Light: {
+                return Theme.Light;
+            }
+            default: {
+                return Theme.Dark;
+            }
         }
-        this.#syncToDom();
     }
-    setOptions(newOptions) {
-        this.#options = { ...DEFAULT_OPTIONS, ...newOptions };
-        this.#onChange();
+    constructor() {
+        if (!browser) {
+            return;
+        }
+        globalThis
+            .matchMedia('(prefers-color-scheme: dark)')
+            .addEventListener('change', () => this.#syncToDom(), { passive: true });
     }
     toggle() {
-        this.#theme.current = this.#theme.current === Theme.Dark ? Theme.Light : Theme.Dark;
-        this.#onChange();
+        this.#theme.current = this.value === Theme.Dark ? ThemePreference.Light : ThemePreference.Dark;
+        this.#syncToDom();
     }
-    #onChange() {
+    setPreference(preference) {
+        this.#theme.current = preference;
         this.#syncToDom();
     }
     #syncToDom() {
-        const { lightClass, darkClass, selector } = this.#options;
-        if (!browser || !selector) {
+        if (!browser) {
             return;
         }
-        const element = document.querySelector(selector);
+        const element = document.querySelector('html');
         if (!element) {
             return;
         }
-        switch (this.#theme.current) {
+        switch (this.value) {
             case Theme.Dark: {
-                if (lightClass) {
-                    element.classList.remove(lightClass);
-                }
-                if (darkClass) {
-                    element.classList.add(darkClass);
-                }
-                const darkReaderLock = document.createElement('meta');
-                darkReaderLock.name = 'darkreader-lock';
-                document.head.appendChild(darkReaderLock);
+                element.classList.remove(LIGHT_CLASS);
+                element.classList.add(DARK_CLASS);
+                const lockRef = document.createElement('meta');
+                lockRef.name = DARK_READER_LOCK_NAME;
+                document.head.appendChild(lockRef);
                 break;
             }
             case Theme.Light: {
-                if (lightClass) {
-                    element.classList.add(lightClass);
-                }
-                if (darkClass) {
-                    element.classList.remove(darkClass);
-                }
-                const darkReaderLock = document.querySelector('head > meta[name=darkreader-lock]');
-                if (darkReaderLock) {
-                    document.head.removeChild(darkReaderLock);
+                element.classList.add(LIGHT_CLASS);
+                element.classList.remove(DARK_CLASS);
+                const lockRef = document.querySelector(`head > meta[name=${DARK_READER_LOCK_NAME}]`);
+                if (lockRef) {
+                    document.head.removeChild(lockRef);
                 }
                 break;
             }

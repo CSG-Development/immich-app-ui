@@ -1,15 +1,12 @@
-import { Theme } from '../types.js';
-export type ThemeOptions = {
-    lightClass?: string;
-    darkClass?: string;
-    selector?: string;
-};
+import { Theme, ThemePreference } from '../types.js';
 declare class ThemeManager {
     #private;
+    get prefersDark(): boolean;
+    get preference(): ThemePreference;
     get value(): Theme;
-    initialize(options?: ThemeOptions): void;
-    setOptions(newOptions: ThemeOptions): void;
+    constructor();
     toggle(): void;
+    setPreference(preference: ThemePreference): void;
 }
 export declare const themeManager: ThemeManager;
 export {};

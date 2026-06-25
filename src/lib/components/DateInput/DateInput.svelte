@@ -5,9 +5,9 @@
   import type { InputProps } from '../../types.js';
   import { getLocalTimeZone, parseDate, today, type DateValue } from '@internationalized/date';
   import Button from '$lib/internal/Button.svelte';
-  import { theme } from '$lib/services/theme.svelte.js';
   import { Theme } from '$lib/types.js';
   import { onDestroy, onMount } from 'svelte';
+  import { themeManager } from '$lib/services/theme-manager.svelte.js';
 
   type Props = {
     label?: string;
@@ -253,7 +253,7 @@
                     -webkit-appearance: none; 
                     -moz-appearance: none;   
                     width: 65px;
-                    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>menu-down</title><path ${theme.value === Theme.Dark ? 'fill="white"' : ''} d="M7,10L12,15L17,10H7Z" /></svg>');
+                    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>menu-down</title><path ${themeManager.value === Theme.Dark ? 'fill="white"' : ''} d="M7,10L12,15L17,10H7Z" /></svg>');
                     background-repeat: no-repeat;
                     background-position: right;
                     background-size: 18px;
