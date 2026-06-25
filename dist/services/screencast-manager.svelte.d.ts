@@ -5,6 +5,7 @@ declare class ScreencastManager {
         moving: boolean;
     } | undefined;
     get events(): KeyboardEvent[];
+    get enabled(): boolean;
     toggle(): void;
     onTick(): void;
     onKeyDown(event: KeyboardEvent): void;

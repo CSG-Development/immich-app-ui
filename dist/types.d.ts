@@ -320,6 +320,7 @@ export type ActionItem = {
     description?: string;
     type?: string;
     searchText?: string;
+    tags?: Array<string | ActionItemTag>;
     icon?: IconLike;
     iconClass?: string;
     color?: Color;

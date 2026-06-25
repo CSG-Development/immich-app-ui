@@ -30,6 +30,7 @@ export declare const Constants: {
         Ui: string;
     };
     Pages: {
+        Blog: string;
         CursedKnowledge: string;
         Roadmap: string;
         PrivacyPolicy: string;

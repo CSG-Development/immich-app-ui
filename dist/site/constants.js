@@ -32,6 +32,7 @@ export const Constants = {
         Ui: 'https://ui.immich.app/',
     },
     Pages: {
+        Blog: 'https://immich.app/blog',
         CursedKnowledge: 'https://immich.app/cursed-knowledge',
         Roadmap: 'https://immich.app/roadmap',
         PrivacyPolicy: 'https://immich.app/privacy-policy',

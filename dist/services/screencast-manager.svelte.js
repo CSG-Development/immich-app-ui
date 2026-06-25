@@ -10,6 +10,9 @@ class ScreencastManager {
     get events() {
         return this.#events.map(({ event }) => event);
     }
+    get enabled() {
+        return this.#enabled.current;
+    }
     toggle() {
         this.#enabled.current = !this.#enabled.current;
         this.#events = [];

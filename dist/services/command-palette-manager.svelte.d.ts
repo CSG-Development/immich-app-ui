@@ -27,6 +27,7 @@ declare class CommandPaletteManager {
         description?: string;
         type?: string;
         searchText?: string;
+        tags?: Array<string | import("../types.js").ActionItemTag>;
         icon?: import("../types.js").IconLike;
         iconClass?: string;
         color?: import("../types.js").Color;
