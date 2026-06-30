@@ -1,120 +1,46 @@
 <script lang="ts">
-  import Text from '../Text/Text.svelte';
-  import { cleanClass } from '$lib/utilities/internal.js';
+  import { zIndex } from '$lib/constants.js';
+  import { Tooltip } from 'bits-ui';
   import type { Snippet } from 'svelte';
-  import { tick } from 'svelte';
 
-  type Props = {
-    class?: string;
-    text?: string;
-    children: Snippet;
+  type Props = Tooltip.RootProps & {
+    text?: string | null;
+    child: Snippet<[{ props: Record<string, unknown> }]>;
   };
 
-  const { class: className, text = '', children }: Props = $props();
-
-  let isVisible = $derived(false);
-  let posX = $derived(0);
-  let posY = $derived(0);
-  const tooltipStyle = $derived(`top:${posY}px; left:${posX}px`);
-
-  const offset = 12;
-  let tooltipEl: HTMLElement | null = $derived(null);
-
-  let showTimeout: ReturnType<typeof setTimeout> | null = $derived(null);
-
-  let latestMouseEvent: MouseEvent | null = $derived(null);
-
-  const updateFromMouse = (e: MouseEvent) => {
-    if (!tooltipEl) return;
-
-    const tooltipW = tooltipEl.offsetWidth;
-    const tooltipH = tooltipEl.offsetHeight;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    let newX = e.pageX + offset;
-    let newY = e.pageY + offset;
-
-    const maxX = vw - tooltipW;
-    const maxY = vh - tooltipH - offset;
-
-    if (newX > maxX) {
-      newX = e.pageX;
-      newY = e.pageY + offset + 10;
-    }
-    if (newY > maxY) {
-      newY = e.pageY - tooltipH - offset;
-    }
-
-    posX = Math.max(offset, Math.min(newX, maxX));
-    posY = Math.max(offset, Math.min(newY, maxY));
-  };
-
-  const show = (e: MouseEvent) => {
-    latestMouseEvent = e;
-
-    if (showTimeout) {
-      clearTimeout(showTimeout);
-    }
-
-    showTimeout = setTimeout(async () => {
-      isVisible = true;
-      await tick();
-
-      if (latestMouseEvent) {
-        updateFromMouse(latestMouseEvent);
-        latestMouseEvent = null;
-      }
-
-      showTimeout = null;
-    }, 500);
-  };
-
-  const hide = () => {
-    if (showTimeout) {
-      clearTimeout(showTimeout);
-      showTimeout = null;
-      latestMouseEvent = null;
-    }
-    isVisible = false;
-  };
-
-  const onMouseMove = (e: MouseEvent) => {
-    latestMouseEvent = e;
-
-    if (isVisible) {
-      updateFromMouse(e);
-    }
-    isVisible = false;
-  };
-
-  let isMobile = $state(false);
-
-  const update = () => {
-    isMobile =
-      window.matchMedia('(pointer: coarse)').matches || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  };
-
-  $effect(() => {
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  });
+  let { open = $bindable(false), child, text, ...restProps }: Props = $props();
 </script>
 
-<div role="presentation" onmouseenter={show} onmouseleave={hide} onmousemove={onMouseMove}>
-  {@render children?.()}
-</div>
-
-{#if isVisible && text && !isMobile}
-  <div
-    bind:this={tooltipEl}
-    class={cleanClass('pointer-events-none fixed z-50 inline-block w-max wrap-break-word whitespace-normal', className)}
-    style={tooltipStyle}
-    aria-hidden="true"
-  >
-    <Text class="border-gray-border bg-gray-bg border px-2 py-1 text-sm text-white/87 dark:bg-white dark:text-black/87">
-      {text}
-    </Text>
-  </div>
+{#if text}
+  <Tooltip.Root bind:open {...restProps}>
+    <Tooltip.Trigger {child} />
+    <Tooltip.Portal>
+      <Tooltip.Content
+        sideOffset={8}
+        class="tooltip-content bg-light-800 text-light {zIndex.Tooltip} rounded-lg px-3.5 py-2 text-xs shadow-lg"
+      >
+        {text}
+      </Tooltip.Content>
+    </Tooltip.Portal>
+  </Tooltip.Root>
+{:else}
+  {@render child({ props: {} })}
 {/if}
+
+<style>
+  :global(.tooltip-content[data-state='delayed-open']),
+  :global(.tooltip-content[data-state='instant-open']) {
+    animation: tooltip-enter 150ms ease-out;
+  }
+
+  @keyframes tooltip-enter {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

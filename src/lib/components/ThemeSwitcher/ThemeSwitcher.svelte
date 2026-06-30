@@ -23,6 +23,8 @@
   };
 
   const themeIcon = $derived(themeManager.value === Theme.Light ? mdiWeatherSunny : mdiWeatherNight);
+
+  console.log(document.documentElement.classList)
 </script>
 
 <IconButton
