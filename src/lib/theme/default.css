@@ -96,7 +96,7 @@
   --color-dark-950: var(--immich-ui-dark-950);
 
   --color-primary: rgb(var(--immich-ui-primary));
-  --color-light: rgb(var(--immich-ui-light));
+  --color-light: var(--immich-ui-light);
   --color-bg: rgb(var(--immich-ui-bg));
   --color-dark: rgb(var(--immich-ui-dark));
   --color-success: rgb(var(--immich-ui-success));

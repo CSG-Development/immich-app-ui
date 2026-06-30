@@ -1,7 +1,7 @@
-body.dark {
+html.dark {
   color-scheme: dark;
 }
 
-body:not(.dark) {
+html.light {
   color-scheme: light;
 }
