@@ -1,7 +1,13 @@
 import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
-import { MenuItemType, type ActionItem, type GithubLinkProps, type IfLike } from '$lib/types.js';
-import { DateTime } from 'luxon';
+import { MenuItemType, type ActionItem, type GithubLinkProps, type GithubLinkType, type IfLike } from '$lib/types.js';
+import type { DateTime } from 'luxon';
+
+const urlTypes: Record<GithubLinkType, string> = {
+  issue: 'issues',
+  pr: 'pull',
+  discussion: 'discussions',
+};
 
 export const asGithubLink = (options: number | GithubLinkProps) => {
   if (typeof options === 'number') {
@@ -47,15 +53,25 @@ export const resolveUrl = (url: string, currentHostname?: string) => {
     return url;
   }
 
-  const target = new URL(url);
-  const targetApp = getImmichApp(target.hostname);
-  const currentApp = getImmichApp(currentHostname ?? globalThis.location?.hostname ?? env.PUBLIC_IMMICH_HOSTNAME);
-
-  return targetApp && targetApp === currentApp ? target.pathname : target.href;
+  try {
+    const target = new URL(url);
+    const targetApp = getImmichApp(target.hostname);
+    const currentApp = getImmichApp(currentHostname ?? globalThis.location?.hostname ?? env.PUBLIC_IMMICH_HOSTNAME);
+    return targetApp && targetApp === currentApp ? target.pathname : target.href;
+  } catch {
+    return url;
+  }
 };
 
 export const isExternalLink = (href: string): boolean => {
-  return !(href.startsWith('/') || href.startsWith('#'));
+  try {
+    const current = new URL(globalThis.location.href);
+    const target = new URL(href, current);
+
+    return target.origin !== current.origin;
+  } catch {
+    return false;
+  }
 };
 
 export type Metadata = {

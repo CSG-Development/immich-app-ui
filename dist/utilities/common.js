@@ -1,7 +1,11 @@
 import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 import { MenuItemType } from '../types.js';
-import { DateTime } from 'luxon';
+const urlTypes = {
+    issue: 'issues',
+    pr: 'pull',
+    discussion: 'discussions',
+};
 export const asGithubLink = (options) => {
     if (typeof options === 'number') {
         options = { number: options };
@@ -37,13 +41,25 @@ export const resolveUrl = (url, currentHostname) => {
     if (!isExternalLink(url)) {
         return url;
     }
-    const target = new URL(url);
-    const targetApp = getImmichApp(target.hostname);
-    const currentApp = getImmichApp(currentHostname ?? globalThis.location?.hostname ?? env.PUBLIC_IMMICH_HOSTNAME);
-    return targetApp && targetApp === currentApp ? target.pathname : target.href;
+    try {
+        const target = new URL(url);
+        const targetApp = getImmichApp(target.hostname);
+        const currentApp = getImmichApp(currentHostname ?? globalThis.location?.hostname ?? env.PUBLIC_IMMICH_HOSTNAME);
+        return targetApp && targetApp === currentApp ? target.pathname : target.href;
+    }
+    catch {
+        return url;
+    }
 };
 export const isExternalLink = (href) => {
-    return !(href.startsWith('/') || href.startsWith('#'));
+    try {
+        const current = new URL(globalThis.location.href);
+        const target = new URL(href, current);
+        return target.origin !== current.origin;
+    }
+    catch {
+        return false;
+    }
 };
 export const isMenuItemType = (item) => {
     return item === MenuItemType.Divider;

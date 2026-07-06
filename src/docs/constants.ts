@@ -192,6 +192,7 @@ export const componentGroups: ComponentGroup[] = [
       { name: 'Switch', icon: mdiToggleSwitchOutline, activeIcon: mdiToggleSwitch },
       { name: 'TimeInput', icon: mdiClockOutline, activeIcon: mdiClock },
       { name: 'DatePicker', icon: mdiCalendar },
+      { name: 'DateInput', icon: mdiCalendar },
     ],
   },
   {

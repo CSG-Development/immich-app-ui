@@ -9,7 +9,7 @@ class ThemeManager {
     #darkModeUser = new MediaQuery('(prefers-color-scheme: dark)');
     #theme = new PersistedLocalStorage('immich-ui-theme', ThemePreference.System, {
         upgrade: (value) => {
-            if (typeof value === 'object' && value.system) {
+            if (typeof value === 'object') {
                 if (value.system) {
                     return ThemePreference.System;
                 }
@@ -49,6 +49,7 @@ class ThemeManager {
         globalThis
             .matchMedia('(prefers-color-scheme: dark)')
             .addEventListener('change', () => this.#syncToDom(), { passive: true });
+        this.#syncToDom();
     }
     toggle() {
         this.#theme.current = this.value === Theme.Dark ? ThemePreference.Light : ThemePreference.Dark;
@@ -70,9 +71,11 @@ class ThemeManager {
             case Theme.Dark: {
                 element.classList.remove(LIGHT_CLASS);
                 element.classList.add(DARK_CLASS);
-                const lockRef = document.createElement('meta');
-                lockRef.name = DARK_READER_LOCK_NAME;
-                document.head.appendChild(lockRef);
+                if (!document.querySelector(`head > meta[name=${DARK_READER_LOCK_NAME}]`)) {
+                    const lockRef = document.createElement('meta');
+                    lockRef.name = DARK_READER_LOCK_NAME;
+                    document.head.appendChild(lockRef);
+                }
                 break;
             }
             case Theme.Light: {

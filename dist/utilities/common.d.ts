@@ -1,5 +1,5 @@
 import { MenuItemType, type ActionItem, type GithubLinkProps, type IfLike } from '../types.js';
-import { DateTime } from 'luxon';
+import type { DateTime } from 'luxon';
 export declare const asGithubLink: (options: number | GithubLinkProps) => {
     href: string;
     text: string;
