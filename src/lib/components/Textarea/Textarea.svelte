@@ -18,7 +18,8 @@
     ...restProps
   }: TextareaProps = $props();
 
-  const { label, description, readOnly, required, invalid, disabled, ...labelProps } = $derived(getFieldContext());
+  const context = getFieldContext();
+  const { label, description, readOnly, required, invalid, disabled, ...labelProps } = $derived(context());
 
   const styles = tv({
     base: 'immich-border focus-within:border-primary placeholder:text-gray-placeholder bg-primary/12 w-full resize-none border outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-800 dark:disabled:bg-gray-500 dark:disabled:text-gray-200',
