@@ -21,7 +21,8 @@
     ...restProps
   }: InputProps = $props();
 
-  const { label, description, readOnly, required, invalid, disabled, ...labelProps } = $derived(getFieldContext());
+  const context = getFieldContext();
+  const { label, description, readOnly, required, invalid, disabled, ...labelProps } = $derived(context());
 
   const iconStyles = tv({
     base: 'mr-1 ml-2 flex flex-shrink-0 items-center justify-center',
