@@ -63,8 +63,6 @@
           color="secondary"
           aria-label="Remove"
         />
-      {:else}
-        <span class="shrink-0">[{item.type}]</span>
       {/if}
     </div>
   </Button>
