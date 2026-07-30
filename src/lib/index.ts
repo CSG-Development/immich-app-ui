@@ -7,6 +7,8 @@ export { default as immichLogoInlineDark } from '$lib/assets/immich-logo-inline-
 export { default as immichLogoInlineLight } from '$lib/assets/immich-logo-inline-light.svg';
 export { default as immichLogoStackedDark } from '$lib/assets/immich-logo-stacked-dark.svg';
 export { default as immichLogoStackedLight } from '$lib/assets/immich-logo-stacked-light.svg';
+export { default as seagatePersonalCloudLogoDark } from '$lib/assets/seagate-personal-cloud-logo-dark.svg';
+export { default as seagatePersonalCloudLogoLight } from '$lib/assets/seagate-personal-cloud-logo-light.svg';
 export { default as immichLogoJson } from '$lib/assets/immich-logo.json';
 export { default as immichLogo } from '$lib/assets/immich-logo.svg';
 export { default as obtainiumBadge } from '$lib/assets/obtainium-badge.png';

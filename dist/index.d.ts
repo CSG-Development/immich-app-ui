@@ -6,6 +6,8 @@ export { default as immichLogoInlineDark } from './assets/immich-logo-inline-dar
 export { default as immichLogoInlineLight } from './assets/immich-logo-inline-light.svg';
 export { default as immichLogoStackedDark } from './assets/immich-logo-stacked-dark.svg';
 export { default as immichLogoStackedLight } from './assets/immich-logo-stacked-light.svg';
+export { default as seagatePersonalCloudLogoDark } from './assets/seagate-personal-cloud-logo-dark.svg';
+export { default as seagatePersonalCloudLogoLight } from './assets/seagate-personal-cloud-logo-light.svg';
 export { default as immichLogoJson } from './assets/immich-logo.json';
 export { default as immichLogo } from './assets/immich-logo.svg';
 export { default as obtainiumBadge } from './assets/obtainium-badge.png';
