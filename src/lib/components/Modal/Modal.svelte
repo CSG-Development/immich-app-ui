@@ -144,7 +144,7 @@
                   {#if typeof icon === 'string'}
                     <Icon {icon} size="1.5rem" aria-hidden />
                   {:else if icon}
-                    <Logo variant="icon" size="tiny" />
+                    <Logo variant="icon-filled" size="xs" />
                   {/if}
                   <CardTitle tag="p" class="text-dark/90 grow text-xl font-normal">{title}</CardTitle>
                   <CloseButton class="-me-2" onclick={() => handleClose()} />

@@ -6,14 +6,15 @@
   import stackedDark from '../../assets/immich-logo-stacked-dark.svg';
   import stackedLight from '../../assets/immich-logo-stacked-light.svg';
   import icon from '../../assets/immich-logo.svg';
+  import iconFilled from '../../assets/immich-logo-filled.svg';  
   import { themeManager } from '../../services/theme-manager.svelte.js';
   import { Theme, type Size } from '../../types.js';
   import { cleanClass } from '../../utilities/internal.js';
   import { tv } from 'tailwind-variants';
 
   type Props = {
-    size?: Size | 'landing';
-    variant?: 'stacked' | 'inline' | 'logo' | 'icon' | 'stacked-futo';
+    size?: Size | 'landing' | 'xs';
+    variant?: 'stacked' | 'inline' | 'logo' | 'icon' | 'stacked-futo' | 'icon-filled';
     class?: string;
   };
 
@@ -33,6 +34,10 @@
         return themeManager.value === Theme.Light ? futoLight : futoDark;
       }
 
+      case 'icon-filled': {
+        return iconFilled;
+      }
+
       default: {
         return icon;
       }
@@ -42,6 +47,7 @@
   const styles = tv({
     variants: {
       size: {
+        xs: 'h-6',
         tiny: 'h-8',
         small: 'h-10',
         medium: 'h-12',
@@ -56,6 +62,7 @@
         'stacked-futo': '',
         logo: 'bg-light aspect-square rounded-full shadow-lg',
         icon: 'aspect-square',
+        'icon-filled': '',
       },
     },
   });
