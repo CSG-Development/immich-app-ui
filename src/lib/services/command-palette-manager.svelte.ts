@@ -68,12 +68,32 @@ class CommandPaletteManager {
 
     if (globalThis.window && document.body) {
       shortcuts(document.body, [
-        { shortcut: { key: 'k', meta: true }, onShortcut: () => this.open() },
-        { shortcut: { key: 'k', ctrl: true }, onShortcut: () => this.open() },
+        {
+          shortcut: { key: 'k', meta: true },
+          ignoreInputFields: false,
+          preventDefault: false,
+          onShortcut: (event) => this.#onOpenShortcut(event),
+        },
+        {
+          shortcut: { key: 'k', ctrl: true },
+          ignoreInputFields: false,
+          preventDefault: false,
+          onShortcut: (event) => this.#onOpenShortcut(event),
+        },
         { shortcut: { key: '/' }, preventDefault: true, onShortcut: () => this.open() },
       ]);
       on(document.body, 'keydown', (event) => this.#handleKeydown(event));
     }
+  }
+
+  #onOpenShortcut(event: KeyboardEvent) {
+    if (this.#isOpen) {
+      // Let the open palette handle vim-style Ctrl/Cmd+K navigation.
+      return;
+    }
+
+    event.preventDefault();
+    this.open();
   }
 
   setTranslations(translations: CommandPaletteTranslations = {}) {
@@ -147,7 +167,19 @@ class CommandPaletteManager {
   }
 
   async #onClose(action?: ActionItem) {
-    await action?.onAction(action);
+    // Clear open state before running the action so the palette can be reopened
+    // even if onAction hangs or throws (nested modals, navigation, etc.).
+    this.#isOpen = false;
+    this.#results = [];
+
+    try {
+      await action?.onAction(action);
+    } catch (error) {
+      console.error('Command palette action failed', error);
+    }
+  }
+
+  #resetOpenState() {
     this.#isOpen = false;
     this.#results = [];
   }
@@ -162,7 +194,10 @@ class CommandPaletteManager {
       initialQuery,
     });
     this.#isOpen = true;
-    void onClose.then((action) => this.#onClose(action));
+    void onClose.then(
+      (action) => this.#onClose(action),
+      () => this.#resetOpenState(),
+    );
   }
 
   navigateUp() {
