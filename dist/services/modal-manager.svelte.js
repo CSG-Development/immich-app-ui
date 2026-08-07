@@ -10,13 +10,22 @@ class ModalManager {
     }
     open(Component, ...props) {
         let modal = {};
+        let closed = false;
         let onClose;
         const deferred = new Promise((resolve) => {
             onClose = async (...args) => {
-                await unmount(modal);
-                this.#openCount--;
-                // make sure bits-ui clean up finishes before resolving
-                setTimeout(() => resolve(args?.[0]), 10);
+                if (closed) {
+                    return;
+                }
+                closed = true;
+                try {
+                    await unmount(modal);
+                    this.#openCount--;
+                }
+                finally {
+                    // make sure bits-ui clean up finishes before resolving
+                    setTimeout(() => resolve(args?.[0]), 10);
+                }
             };
             modal = mount(Component, {
                 target: document.body,

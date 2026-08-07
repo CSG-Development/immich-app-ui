@@ -81,7 +81,31 @@
   const bodyChildren = $derived(getByKey(ChildKey.ModalBody));
   const footerChildren = $derived(getByKey(ChildKey.ModalFooter));
 
-  const handleClose = async () => {
+  let cardRef = $state<HTMLElement | null>(null);
+  let dismissed = $state(false);
+  let closeRequested = $state(false);
+
+  const interactOutsideBehavior = $derived(closeOnBackdropClick ? 'close' : 'ignore');
+  const escapeKeydownBehavior = $derived(closeOnEsc ? 'close' : 'ignore');
+
+  let layer = $state<number>();
+  const isHidden = $derived(layer !== modalState.layer);
+  // Track local dismiss separately from layer stacking. A one-way `open={!isHidden}`
+  // prop is reset on every parent re-render, which can cancel bits-ui's close animation
+  // and prevent `onClose` from ever firing (e.g. command palette stuck closed).
+  const open = $derived(!dismissed && !isHidden);
+
+  const requestClose = () => {
+    if (dismissed || isHidden || closeRequested) {
+      return;
+    }
+
+    dismissed = true;
+    closeRequested = true;
+    void finalizeClose();
+  };
+
+  const finalizeClose = async () => {
     // wait for bits-ui to complete its event cycle
     await tick();
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -89,17 +113,9 @@
     onClose?.();
   };
 
-  let cardRef = $state<HTMLElement | null>(null);
-
-  const interactOutsideBehavior = $derived(closeOnBackdropClick ? 'close' : 'ignore');
-  const escapeKeydownBehavior = $derived(closeOnEsc ? 'close' : 'ignore');
-
-  let layer = $state<number>();
-  const isHidden = $derived(layer !== modalState.layer);
-
-  const onOpenChangeComplete = (isOpen: boolean) => {
-    if (!isOpen && !isHidden) {
-      onClose?.();
+  const onOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      requestClose();
     }
   };
 
@@ -123,7 +139,7 @@
   });
 </script>
 
-<Dialog.Root open={!isHidden} {onOpenChangeComplete}>
+<Dialog.Root {open} {onOpenChange}>
   <Dialog.Portal>
     <Dialog.Overlay class="{zIndex.ModalBackdrop} fixed start-0 top-0  flex h-dvh max-h-dvh w-screen bg-black/30" />
     <Dialog.Content
@@ -147,7 +163,7 @@
                     <Logo variant="icon-filled" size="xs" />
                   {/if}
                   <CardTitle tag="p" class="text-dark/90 grow text-xl font-normal">{title}</CardTitle>
-                  <CloseButton class="-me-2" onclick={() => handleClose()} />
+                  <CloseButton class="-me-2" onclick={() => requestClose()} />
                 </div>
               {/if}
             </CardHeader>
