@@ -22,7 +22,7 @@
       ghostTheme: {
         false: '',
         muted: 'text-gray-600 dark:text-gray-400',
-        primary: 'text-primary',
+        primary: 'text-primary-700',
         secondary: 'text-dark',
         success: 'text-success',
         danger: 'text-danger',
@@ -44,7 +44,7 @@
       outlineTheme: {
         false: '',
         muted: 'border-light-600 text-light-600 border',
-        primary: 'border-primary text-primary border',
+        primary: 'border-primary-700 text-primary-700 border',
         secondary: 'border-dark text-dark border',
         success: 'border-success text-success border',
         danger: 'border-danger text-danger border',

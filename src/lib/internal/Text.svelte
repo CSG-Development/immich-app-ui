@@ -34,7 +34,7 @@
 		variants: {
 			color: {
 				muted: 'text-gray-600 dark:text-gray-400',
-				primary: 'text-primary',
+				primary: 'text-primary-700',
 				secondary: 'text-dark',
 				success: 'text-success',
 				danger: 'text-danger',

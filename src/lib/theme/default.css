@@ -126,17 +126,17 @@
   :root,
   .light {
     /* light */
-    --immich-ui-primary-50: oklch(0.9616 0.0166 271.24);
-    --immich-ui-primary-100: oklch(0.897 0.033 281.96);
-    --immich-ui-primary-200: oklch(0.787 0.07 281.03);
-    --immich-ui-primary-300: oklch(0.686 0.106 278.96);
-    --immich-ui-primary-400: oklch(0.577 0.142 275.93);
-    --immich-ui-primary-500: #4250af;
-    --immich-ui-primary-600: oklch(0.404 0.129 273.18);
-    --immich-ui-primary-700: oklch(0.343 0.109 272.56);
-    --immich-ui-primary-800: oklch(0.272 0.088 272.94);
-    --immich-ui-primary-900: oklch(0.211 0.068 273.01);
-    --immich-ui-primary-950: oklch(0.15 0.05 273.01);
+    --immich-ui-primary-50: oklch(0.968 0.048 138.59);
+    --immich-ui-primary-100: oklch(0.938 0.106 138.52);
+    --immich-ui-primary-200: oklch(0.878 0.208 137.14);
+    --immich-ui-primary-300: oklch(0.8094 0.1544 138.37);
+    --immich-ui-primary-400: oklch(0.776 0.183 137.13);
+    --immich-ui-primary-500: oklch(0.725 0.172 137.11);
+    --immich-ui-primary-600: oklch(0.609 0.145 137.3);
+    --immich-ui-primary-700: oklch(0.5002 0.1115 147.51);
+    --immich-ui-primary-800: oklch(0.371 0.087 136.99);
+    --immich-ui-primary-900: oklch(0.254 0.061 137.23);
+    --immich-ui-primary-950: oklch(0.193 0.046 136.61);
 
     --immich-ui-success-50: oklch(0.983 0.0115 162.06);
     --immich-ui-success-100: oklch(0.937 0.109 148.66);
@@ -213,7 +213,7 @@
 
     --immich-ui-light: oklch(100% 0 0);
     --immich-ui-muted: oklch(71% 0 271);
-    --immich-ui-primary: 25 118 210;
+    --immich-ui-primary: 110 190 73;
     --immich-ui-dark: 0 0 0 / 0.87;
     --immich-ui-bg: 240 241 245;
     --immich-ui-success: 16 188 99;
@@ -230,17 +230,17 @@
   }
 
   .dark {
-    --immich-ui-primary-950: oklch(0.982 0.007 268.63);
-    --immich-ui-primary-900: oklch(0.966 0.015 260.75);
-    --immich-ui-primary-800: oklch(0.932 0.03 262.55);
-    --immich-ui-primary-700: oklch(0.906 0.041 260.95);
-    --immich-ui-primary-600: oklch(0.871 0.057 259.89);
-    --immich-ui-primary-500: oklch(0.836 0.074 258.58);
-    --immich-ui-primary-400: oklch(0.526 0.063 256.86);
-    --immich-ui-primary-300: oklch(0.449 0.054 257.6);
-    --immich-ui-primary-200: oklch(0.372 0.045 257.42);
-    --immich-ui-primary-100: oklch(0.258 0.032 258.31);
-    --immich-ui-primary-50: oklch(0.198 0.023 257.29);
+    --immich-ui-primary-950: oklch(0.968 0.048 138.59);
+    --immich-ui-primary-900: oklch(0.938 0.106 138.52);
+    --immich-ui-primary-800: oklch(0.878 0.208 137.14);
+    --immich-ui-primary-700: oklch(0.8094 0.1544 138.37);
+    --immich-ui-primary-600: oklch(0.776 0.183 137.13);
+    --immich-ui-primary-500: oklch(0.725 0.172 137.11);
+    --immich-ui-primary-400: oklch(0.609 0.145 137.3);
+    --immich-ui-primary-300: oklch(0.49 0.116 137.04);
+    --immich-ui-primary-200: oklch(0.371 0.087 136.99);
+    --immich-ui-primary-100: oklch(0.254 0.061 137.23);
+    --immich-ui-primary-50: oklch(0.193 0.046 136.61);
 
     --immich-ui-success-950: oklch(0.979 0.027 157.32);
     --immich-ui-success-900: oklch(0.969 0.043 155.86);
@@ -316,7 +316,7 @@
 
     --immich-ui-light: oklch(0% 0 0);
     --immich-ui-muted: oklch(87% 0 271);
-    --immich-ui-primary: 100 181 246;
+    --immich-ui-primary: 110 190 73;
     --immich-ui-bg: 61 62 65;
     --immich-ui-dark: 255 255 255;
     --immich-ui-success: 72 237 152;
