@@ -215,7 +215,7 @@
     --immich-ui-muted: oklch(71% 0 271);
     --immich-ui-primary: 110 190 73;
     --immich-ui-dark: 0 0 0 / 0.87;
-    --immich-ui-bg: 240 241 245;
+    --immich-ui-bg: 234 239 244;
     --immich-ui-success: 16 188 99;
     --immich-ui-danger: 160 42 33;
     --immich-ui-warning: 216 143 64;
@@ -317,7 +317,7 @@
     --immich-ui-light: oklch(0% 0 0);
     --immich-ui-muted: oklch(87% 0 271);
     --immich-ui-primary: 110 190 73;
-    --immich-ui-bg: 61 62 65;
+    --immich-ui-bg: 71 79 93;
     --immich-ui-dark: 255 255 255;
     --immich-ui-success: 72 237 152;
     --immich-ui-danger: 242 145 138;
