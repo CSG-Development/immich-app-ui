@@ -10,6 +10,6 @@
   let { href, text }: Props = $props();
 </script>
 
-<Link {href} underline={false} class="text-dark/90 hover:text-primary transition-colors">
+<Link {href} underline={false} class="text-dark/90 hover:text-primary-700 transition-colors">
   <Text>{text}</Text>
 </Link>

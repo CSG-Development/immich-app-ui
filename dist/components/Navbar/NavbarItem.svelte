@@ -43,10 +43,10 @@
   const activeIconProps = $derived(asIconProps(activeIcon));
 
   const styles = tv({
-    base: 'hover:bg-subtle hover:text-primary flex w-full place-items-center gap-4 rounded-e-full ps-5 transition-[padding] delay-100 duration-100',
+    base: 'hover:bg-primary-300/10 hover:text-primary-700 flex w-full place-items-center gap-4 rounded-e-full ps-5 transition-[padding] delay-100 duration-100',
     variants: {
       active: {
-        true: 'bg-primary/10 text-primary',
+        true: 'bg-primary/10 text-primary-700',
         false: '',
       },
       variant: {
@@ -63,7 +63,7 @@
       <button
         type="button"
         aria-label={expanded ? t('collapse') : t('expand')}
-        class="hover:bg-subtle hover:text-primary absolute me-2 hidden h-full rounded-lg px-0.5 md:block"
+        class="hover:bg-primary-300/10 hover:text-primary-700 absolute me-2 hidden h-full rounded-lg px-0.5 md:block"
         onclick={() => (expanded = !expanded)}
       >
         <Icon

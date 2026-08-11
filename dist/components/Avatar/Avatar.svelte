@@ -16,7 +16,7 @@
     base: 'flex items-center overflow-hidden rounded-full align-middle text-white shadow-md',
     variants: {
       color: {
-        primary: 'bg-primary/12 dark:bg-primary/24 text-primary',
+        primary: 'bg-primary-700/12 dark:bg-primary-700/24 text-primary-700',
         pink: 'bg-pink-400/12 dark:bg-pink-400/24 text-pink-400',
         red: 'bg-red-500/12 dark:bg-red-500/24 text-red-500',
         yellow: 'bg-yellow-500/12 dark:bg-yellow-500/24 text-yellow-500',

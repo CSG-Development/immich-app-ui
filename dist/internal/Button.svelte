@@ -86,7 +86,8 @@
       filledColor: styleVariants.filledColor,
       filledColorHover: styleVariants.filledColorHover,
       outlineColor: {
-        primary: 'border-primary bg-primary/10 text-primary not-disabled:hover:bg-primary/20 border',
+        primary:
+          'border-primary-700 bg-primary/10 text-primary-700 not-disabled:hover:bg-primary-300/20 dark:not-disabled:hover:bg-primary/20 border',
         secondary: 'border-dark bg-light-100 text-dark not-disabled:hover:bg-light-200 border',
         success: 'border-success bg-success/10 text-success not-disabled:hover:bg-success/20 border',
         danger: 'border-danger bg-danger/10 text-danger not-disabled:hover:bg-danger/20 border',
@@ -94,7 +95,8 @@
         info: 'border-info bg-info/10 text-info not-disabled:hover:bg-info/20 border',
       },
       ghostColor: {
-        primary: 'text-primary not-disabled:hover:bg-primary-50',
+        primary:
+          'text-primary-700 not-disabled:hover:bg-primary-300/20 dark:not-disabled:hover:bg-primary/20',
         secondary: 'text-dark not-disabled:hover:bg-light-100',
         success: 'text-success not-disabled:hover:bg-success-50',
         danger: 'text-danger not-disabled:hover:bg-danger-50',

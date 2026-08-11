@@ -64,7 +64,7 @@
 
 <table bind:this={ref} class={cleanClass('w-full text-center', className)} {...restProps}>
   {#if headerChild}
-    <thead class={cleanClass('text-primary mb-4 flex w-full overflow-hidden', commonStyles({ shape, border }))}>
+    <thead class={cleanClass('text-primary-700 mb-4 flex w-full overflow-hidden', commonStyles({ shape, border }))}>
       <tr class={cleanClass(headerRowStyles({ spacing }), headerChild.class)}>
         {@render headerChild?.children?.()}
       </tr>
@@ -83,7 +83,7 @@
 {#if footerChild}
   <div
     class={cleanClass(
-      'text-primary bg-subtle mt-4 flex h-12 w-full place-items-center p-4',
+      'text-primary-700 bg-subtle mt-4 flex h-12 w-full place-items-center p-4',
       commonStyles({ shape, border }),
       footerChild.class,
     )}

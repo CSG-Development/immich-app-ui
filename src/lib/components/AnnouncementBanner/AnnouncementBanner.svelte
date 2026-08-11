@@ -26,7 +26,7 @@
         false: '',
       },
       color: {
-        primary: 'bg-primary/15 text-primary dark:bg-primary/10',
+        primary: 'bg-primary-700/15 text-primary-700 dark:bg-primary/10',
         secondary: 'bg-dark/15 text-dark dark:bg-dark/10',
         muted: 'bg-subtle text-subtle dark:bg-subtle',
         info: 'bg-info/15 text-info dark:bg-info/10',

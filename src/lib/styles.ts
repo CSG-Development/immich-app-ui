@@ -2,7 +2,7 @@ import { cleanClass } from '$lib/utilities/internal.js';
 import { tv } from 'tailwind-variants';
 
 const color = {
-  primary: 'text-primary',
+  primary: 'text-primary-700',
   secondary: 'text-dark',
   success: 'text-success',
   danger: 'text-danger',
@@ -42,7 +42,7 @@ export const styleVariants = {
   },
 
   borderColor: {
-    primary: 'border-primary',
+    primary: 'border-primary-700',
     secondary: 'border-dark',
     success: 'border-success',
     danger: 'border-danger',
@@ -51,7 +51,7 @@ export const styleVariants = {
   },
 
   fillColor: {
-    primary: 'fill-primary',
+    primary: 'fill-primary-700',
     secondary: 'fill-dark',
     success: 'fill-success',
     danger: 'fill-danger',
@@ -60,16 +60,16 @@ export const styleVariants = {
   },
 
   filledColor: {
-    primary: 'bg-primary text-light',
+    primary: 'bg-primary text-black',
     secondary: 'bg-dark text-light',
-    success: 'bg-success text-light',
+    success: 'bg-success text-black',
     danger: 'bg-danger text-light',
-    warning: 'bg-warning text-light',
-    info: 'bg-info text-light',
+    warning: 'bg-warning text-black',
+    info: 'bg-info text-black',
   },
 
   filledColorHover: {
-    primary: 'not-disabled:hover:bg-primary/80',
+    primary: 'not-disabled:hover:bg-primary-300 dark:not-disabled:hover:bg-primary-700',
     secondary: 'not-disabled:hover:bg-dark/80',
     success: 'not-disabled:hover:bg-success/80',
     danger: 'not-disabled:hover:bg-danger/80',
