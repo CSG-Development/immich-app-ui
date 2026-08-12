@@ -15,6 +15,11 @@
   }: PasswordInputProps = $props();
 
   let labelValue = $derived(isVisible ? t('hide_password', translations) : t('show_password', translations));
+
+  // Keep the toggle smaller than the field so it stays inside round/giant inputs.
+  const toggleSize = $derived(
+    size === 'giant' || size === 'large' ? 'medium' : size === 'medium' ? 'small' : (size ?? 'small'),
+  );
 </script>
 
 <Input bind:value {size} type={isVisible ? 'text' : 'password'} {color} {...props}>
@@ -24,8 +29,7 @@
         variant="ghost"
         shape="round"
         color="secondary"
-        {size}
-        class="me-1"
+        size={toggleSize}
         icon={isVisible ? mdiEyeOffOutline : mdiEyeOutline}
         onclick={() => (isVisible = !isVisible)}
         title={labelValue}

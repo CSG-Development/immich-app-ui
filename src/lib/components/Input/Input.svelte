@@ -25,7 +25,7 @@
   const { label, description, readOnly, required, invalid, disabled, ...labelProps } = $derived(context());
 
   const iconStyles = tv({
-    base: 'mr-1 ml-2 flex flex-shrink-0 items-center justify-center',
+    base: 'me-1 ms-2 flex shrink-0 items-center justify-center',
     variants: {
       size: {
         tiny: 'w-6',
@@ -43,7 +43,7 @@
       shape: {
         rectangle: 'rounded-none',
         'semi-round': '',
-        round: 'rounded-full',
+        round: 'rounded-full overflow-hidden',
       },
       roundedSize: {
         tiny: 'rounded-3xl',
@@ -60,7 +60,7 @@
   });
 
   const inputStyles = tv({
-    base: 'placeholder:text-gray-placeholder flex-1 bg-transparent outline-none disabled:cursor-not-allowed',
+    base: 'placeholder:text-gray-placeholder min-w-0 flex-1 bg-transparent outline-none disabled:cursor-not-allowed',
     variants: {
       textSize: {
         tiny: 'text-xs',
