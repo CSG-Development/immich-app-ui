@@ -26,7 +26,7 @@ export const shouldIgnoreEvent = (event) => {
         return false;
     }
     const type = event.target.type;
-    return ['textarea', 'text', 'date', 'datetime-local', 'email', 'password'].includes(type);
+    return ['textarea', 'text', 'number', 'date', 'datetime-local', 'email', 'password', 'search', 'tel', 'url'].includes(type);
 };
 export const matchesShortcut = (event, shortcut) => {
     return (shortcut.key.toLowerCase() === event.key.toLowerCase() &&
