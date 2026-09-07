@@ -1,22 +1,30 @@
 <script lang="ts">
   import Input from '../Input/Input.svelte';
   import type { NumberInputProps } from '../../types.js';
-  import { getNumberInputDisplayValue, toNumberInputText } from './number-input-value.js';
 
   let { value = $bindable(), color = 'secondary', size, ...props }: NumberInputProps = $props();
 
-  let text = $state(toNumberInputText(value));
+  let inputEl: HTMLInputElement | null = $state(null);
 
-  const getValue = () => getNumberInputDisplayValue(text, value);
+  const getValue = () => {
+    // type="number" reports "" for in-progress values like "34." or "-".
+    // Echo that back so Svelte does not write String(value) and reset the caret.
+    if (inputEl?.validity.badInput) {
+      return inputEl.value;
+    }
+
+    return typeof value === 'number' ? String(value) : '';
+  };
 
   const setValue = (newValue: string | number | null) => {
-    if (typeof newValue === 'number') {
-      value = newValue;
-      text = String(newValue);
+    if (inputEl?.validity.badInput) {
       return;
     }
 
-    text = newValue ?? '';
+    if (typeof newValue === 'number') {
+      value = newValue;
+      return;
+    }
 
     // empty string or null
     if (!newValue) {
@@ -33,4 +41,4 @@
   };
 </script>
 
-<Input bind:value={getValue, setValue} {size} type="number" {color} {...props} />
+<Input {size} type="number" {color} {...props} bind:ref={inputEl} bind:value={getValue, setValue} />
