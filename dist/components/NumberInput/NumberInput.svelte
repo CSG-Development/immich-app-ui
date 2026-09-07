@@ -4,41 +4,31 @@
 
   let { value = $bindable(), color = 'secondary', size, ...props }: NumberInputProps = $props();
 
-  let inputEl: HTMLInputElement | null = $state(null);
-
-  const getValue = () => {
-    // type="number" reports "" for in-progress values like "34." or "-".
-    // Echo that back so Svelte does not write String(value) and reset the caret.
-    if (inputEl?.validity.badInput) {
-      return inputEl.value;
-    }
-
-    return typeof value === 'number' ? String(value) : '';
-  };
-
+  // Svelte's type="number" binding uses `null` for empty/in-progress values (e.g. "1." or "-").
+  // Returning a string here would write back to the input and clear the decimal/sign.
+  const getValue = () => value ?? null;
   const setValue = (newValue: string | number | null) => {
-    if (inputEl?.validity.badInput) {
-      return;
-    }
-
     if (typeof newValue === 'number') {
-      value = newValue;
+      value = Number.isNaN(newValue) ? undefined : newValue;
       return;
     }
 
-    // empty string or null
-    if (!newValue) {
+    if (newValue === null || newValue === '') {
       value = undefined;
       return;
     }
 
     const parsed = Number.parseFloat(newValue);
-    if (Number.isNaN(parsed)) {
-      return;
-    }
-
-    value = parsed;
+    value = Number.isNaN(parsed) ? undefined : parsed;
   };
 </script>
 
-<Input {size} type="number" {color} {...props} bind:ref={inputEl} bind:value={getValue, setValue} />
+<Input
+  {size}
+  {color}
+  {...props}
+  type="number"
+  step="any"
+  inputmode="decimal"
+  bind:value={getValue as unknown as () => string, setValue}
+/>
