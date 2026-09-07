@@ -1,15 +1,22 @@
 <script lang="ts">
   import Input from '../Input/Input.svelte';
   import type { NumberInputProps } from '../../types.js';
+  import { getNumberInputDisplayValue, toNumberInputText } from './number-input-value.js';
 
   let { value = $bindable(), color = 'secondary', size, ...props }: NumberInputProps = $props();
 
-  const getValue = () => (typeof value === 'number' ? String(value) : '');
+  let text = $state(toNumberInputText(value));
+
+  const getValue = () => getNumberInputDisplayValue(text, value);
+
   const setValue = (newValue: string | number | null) => {
     if (typeof newValue === 'number') {
       value = newValue;
+      text = String(newValue);
       return;
     }
+
+    text = newValue ?? '';
 
     // empty string or null
     if (!newValue) {
@@ -17,7 +24,7 @@
       return;
     }
 
-    const parsed = parseFloat(newValue);
+    const parsed = Number.parseFloat(newValue);
     if (Number.isNaN(parsed)) {
       return;
     }
