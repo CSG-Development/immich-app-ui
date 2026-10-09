@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getFieldContext } from '../common/context.svelte.js';
-  import Icon from '../components/Icon/Icon.svelte';
   import IconButton from '../components/IconButton/IconButton.svelte';
   import Label from '../components/Label/Label.svelte';
+  import DateCalendar from './DateCalendar.svelte';
   import { zIndex } from '../constants.js';
   import { t } from '../services/translation.svelte.js';
   import { getLocale } from '../state/locale-state.svelte.js';
@@ -10,7 +10,7 @@
   import type { Shape, Size } from '../types.js';
   import { cleanClass } from '../utilities/internal.js';
   import type { DateValue } from '@internationalized/date';
-  import { mdiCalendar, mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+  import { mdiCalendar } from '@mdi/js';
   import { DatePicker } from 'bits-ui';
   import { tv } from 'tailwind-variants';
 
@@ -38,6 +38,9 @@
   const { readOnly, required, invalid, disabled, label, ...labelProps } = $derived(context());
   const size = $derived(initialSize ?? labelProps.size ?? 'small');
 
+  let open = $state(false);
+  let prevDate = $state<DateValue | undefined>(undefined);
+
   const containerStyles = tv({
     base: cleanClass(styleVariants.inputContainerCommon, 'flex w-full items-center'),
     variants: {
@@ -50,24 +53,48 @@
     },
   });
 
-  const buttonStyles = tv({
-    base: 'hover:bg-light-200 hover:dark:bg-light-300 flex h-10 w-10 items-center justify-center rounded-lg hover:cursor-pointer',
-  });
-
   const segmentStyles = tv({
     base: 'focus:bg-light-300 focus:text-light-900 data-focused:bg-light-300 data-focused:text-light-900 data-placeholder:text-light-400 dark:focus:bg-light-700 dark:focus:text-light-100 dark:data-focused:bg-light-300 dark:data-focused:text-light-900 rounded px-1 py-0.5 tabular-nums outline-none data-disabled:cursor-not-allowed',
     variants: {
       textSize: styleVariants.textSize,
     },
   });
+
+  const getOpen = () => open;
+
+  const setOpen = (isOpen: boolean) => {
+    if (isOpen) {
+      prevDate = date;
+    }
+    open = isOpen;
+  };
+
+  const handleClear = () => {
+    date = undefined;
+    onChange?.(undefined);
+    open = false;
+  };
+
+  const handleCancel = () => {
+    date = prevDate;
+    onChange?.(prevDate);
+    open = false;
+  };
+
+  const handleOk = () => {
+    prevDate = date;
+    open = false;
+  };
 </script>
 
-<div class={cleanClass('flex w-full flex-col gap-1', className)}>
+<div class={cleanClass('calendar flex w-full flex-col gap-1', className)}>
   <DatePicker.Root
     onValueChange={onChange}
     minValue={minDate}
     maxValue={maxDate}
     bind:value={date}
+    bind:open={getOpen, setOpen}
+    closeOnDateSelect={false}
     readonly={readOnly}
     locale={getLocale()}
     {disabled}
@@ -121,53 +148,32 @@
     </DatePicker.Input>
     <DatePicker.Portal>
       <DatePicker.Content
-        class="bg-subtle text-dark rounded-xl border p-4 shadow-lg outline-none select-none {zIndex.SelectDropdown}"
+        class="rounded-xl outline-none select-none {zIndex.SelectDropdown}"
         sideOffset={10}
       >
-        <DatePicker.Calendar class="w-full">
-          {#snippet children({ months, weekdays })}
-            <DatePicker.Header class="mb-3 flex items-center justify-between">
-              <DatePicker.PrevButton class={buttonStyles()}>
-                <Icon icon={mdiChevronLeft} size="1.25rem" />
-              </DatePicker.PrevButton>
-              <DatePicker.Heading class="text-sm font-semibold" />
-              <DatePicker.NextButton class={buttonStyles()}>
-                <Icon icon={mdiChevronRight} size="1.25rem" />
-              </DatePicker.NextButton>
-            </DatePicker.Header>
-            {#each months as month (`month-${month.value}`)}
-              <DatePicker.Grid class="w-full border-collapse">
-                <DatePicker.GridHead>
-                  <DatePicker.GridRow class="flex w-full">
-                    {#each weekdays as day, i (`weekday-${i}`)}
-                      <DatePicker.HeadCell
-                        class="text-muted flex h-8 w-8 flex-1 items-center justify-center text-xs font-medium"
-                      >
-                        {day.slice(0, 2)}
-                      </DatePicker.HeadCell>
-                    {/each}
-                  </DatePicker.GridRow>
-                </DatePicker.GridHead>
-                <DatePicker.GridBody>
-                  {#each month.weeks as weekDates (`weekDates-${weekDates}`)}
-                    <DatePicker.GridRow class="flex w-full">
-                      {#each weekDates as date (`date-${date.toString()}`)}
-                        <DatePicker.Cell {date} month={month.value} class="flex-1">
-                          <DatePicker.Day
-                            class="{buttonStyles()} data-selected:bg-primary data-selected:hover:bg-primary-300 data-selected:text-light data-today:border-primary-200 data-today:dark:border-primary-400 data-today:dark:bg-primary-200 data-today:bg-primary-50 data-outside-month:text-light-400 data-unavailable:text-light-300 border border-transparent text-sm data-disabled:cursor-not-allowed data-disabled:opacity-40 data-unavailable:cursor-not-allowed data-unavailable:line-through"
-                          >
-                            {date.day}
-                          </DatePicker.Day>
-                        </DatePicker.Cell>
-                      {/each}
-                    </DatePicker.GridRow>
-                  {/each}
-                </DatePicker.GridBody>
-              </DatePicker.Grid>
-            {/each}
-          {/snippet}
-        </DatePicker.Calendar>
+        <DateCalendar
+          selectedValue={date}
+          onClear={handleClear}
+          onCancel={handleCancel}
+          onOk={handleOk}
+        />
       </DatePicker.Content>
     </DatePicker.Portal>
   </DatePicker.Root>
 </div>
+
+{#if open}
+  <div
+    class="fixed inset-0 z-40 bg-black/50 md:hidden"
+    role="button"
+    tabindex="0"
+    onclick={() => (open = false)}
+    onkeydown={(e) => e.key === 'Escape' && (open = false)}
+  ></div>
+{/if}
+
+<style>
+  :global(.calendar) {
+    font-family: 'Roboto', sans-serif;
+  }
+</style>
